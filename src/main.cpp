@@ -1,6 +1,16 @@
-#include <iostream>
+// Project Headers
+#include <uci.hpp>
+#include <command_manager.hpp>
 
 int main() {
-    std::cout << "Hello, World!" << std::endl;
+    UCI uci;
+    
+    uci.init();
+    commands::init(uci);
+
+    while (!commands::exit) {
+        uci.loop();
+    }
+    
     return 0;
 }
