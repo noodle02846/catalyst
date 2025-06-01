@@ -53,3 +53,6 @@ CMakeUserPresets.json
 
 # Build directories
 build/
+
+# Visual Studio Code
+.vscode/

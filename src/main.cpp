@@ -9,7 +9,7 @@ int main() {
     commands::init(uci);
 
     while (!commands::exit) {
-        uci.loop();
+        uci.loop(uci);
     }
     
     return 0;

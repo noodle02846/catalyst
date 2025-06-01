@@ -15,16 +15,21 @@
 // Project Headers
 #include <board.hpp>
 
-using UCICommand = std::function<void(const std::string_view& line)>;
+class UCI;
+using UCICommand = std::function<void(UCI& protocol, const std::vector<std::string>& args)>;
 
 class UCI {
 public:
     UCI() = default;
 
     void init();
-    void loop();
+    void loop(UCI& protocol);
 
     void addCommand(const std::string_view& command, UCICommand handler);
+
+    [[nodiscard]] BoardManager getBoard() const noexcept {
+        return this->_boardManager;
+    }
 private:
     BoardManager _boardManager;
     std::unordered_map<std::string_view, UCICommand> _commands;
