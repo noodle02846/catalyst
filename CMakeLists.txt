@@ -1,6 +1,30 @@
+# Set compiler macros for versioning
+set(CATALYST_VERSION_MAJOR 0)
+set(CATALYST_VERSION_MINOR 2)
+set(CATALYST_VERSION_PATCH 0)
+
+# Pre-release label
+set(CATALYST_VERSION_PRE_RELEASE "alpha")
+
+# Full version string
+set(CATALYST_VERSION "${CATALYST_VERSION_MAJOR}.${CATALYST_VERSION_MINOR}.${CATALYST_VERSION_PATCH}")
+set(CATALYST_VERSION_FULL "
+    ${CATALYST_VERSION_MAJOR}.
+    ${CATALYST_VERSION_MINOR}.
+    ${CATALYST_VERSION_PATCH}${CATALYST_VERSION_PRE_RELEASE}
+")
+
+# Define preprocessor macros for versioning
+add_definitions(-DCATALYST_VERSION_MAJOR=${CATALYST_VERSION_MAJOR})
+add_definitions(-DCATALYST_VERSION_MINOR=${CATALYST_VERSION_MINOR})
+add_definitions(-DCATALYST_VERSION_PATCH=${CATALYST_VERSION_PATCH})
+
+# Full preprocessor macro for version
+add_definitions(-DCATALYST_VERSION="${CATALYST_VERSION}")
+
 # Basic project setup
 cmake_minimum_required(VERSION 3.12)
-project(Catalyst VERSION 0.1.0 LANGUAGES CXX)
+project(Catalyst VERSION ${CATALYST_VERSION} LANGUAGES CXX)
 
 # Set the C++ standard
 set(CMAKE_CXX_STANDARD 20)

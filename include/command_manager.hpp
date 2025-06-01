@@ -1,11 +1,15 @@
 #include <uci.hpp>
 
+#ifndef CATALYST_VERSION
+#define CATALYST_VERSION "[UNKNOWN]"
+#endif
+
 namespace commands {
     inline static bool exit = false;
     inline static bool debugOn = false;
 
     void uci(UCI& protocol, const std::vector<std::string>& args) {
-        std::cout << "id name Catalyst" << std::endl;
+        std::cout << "id name Catalyst v" << CATALYST_VERSION << std::endl;
         std::cout << "id author Noodle" << std::endl;
         std::cout << "uciok" << std::endl;
     }
