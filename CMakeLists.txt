@@ -20,14 +20,14 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
 
 # Add the source files
-set(SOURCE_FILES
-    "${CMAKE_SOURCE_DIR}/src/main.cpp"
-    "${CMAKE_SOURCE_DIR}/src/uci.cpp"
-    "${CMAKE_SOURCE_DIR}/src/board.cpp"
-)
+file(GLOB_RECURSE SOURCE_FILES "${CMAKE_SOURCE_DIR}/src/*.cpp")
 
 # Add the executable target
-add_executable(Catalyst WIN32 ${SOURCE_FILES})
+if (MSVC)
+    add_executable(Catalyst WIN32 ${SOURCE_FILES})
+else()
+    add_executable(Catalyst EXCLUDE_FROM_ALL ${SOURCE_FILES})
+endif()
 
 # Include project headers
 target_include_directories(Catalyst PRIVATE "${CMAKE_SOURCE_DIR}/include")
