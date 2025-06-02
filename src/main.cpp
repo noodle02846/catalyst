@@ -4,11 +4,12 @@
 
 int main() {
     UCI uci;
+    CommandManager commands;
     
     uci.init();
-    commands::init(uci);
+    commands.init(uci);
 
-    while (!commands::exit) {
+    while (!commands.shouldExit()) {
         uci.loop(uci);
     }
     

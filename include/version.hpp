@@ -1,0 +1,3 @@
+#ifndef CATALYST_VERSION
+#define CATALYST_VERSION "[UNKNOWN]"
+#endif
