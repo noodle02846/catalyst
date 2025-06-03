@@ -21,7 +21,6 @@ public:
 
     void debug(UCI& protocol, const std::vector<std::string>& args) {
         if (args.empty()) {
-            std::cout << "debug is " << (this->_debug ? "on" : "off") << std::endl;
             return;
         }
 

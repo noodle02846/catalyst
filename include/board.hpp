@@ -16,7 +16,10 @@ public:
 
     [[nodiscard]] bool updateBoard(const std::string_view& fen = chess::constants::STARTPOS);
 
-    [[nodiscard]] chess::Movelist getLegalMoves(bool capturesOnly = false);
+    void pushMove(const chess::Move& move);
+    void undoMove(const chess::Move& move);
+
+    [[nodiscard]] chess::Movelist getLegalMoves(bool capturesOnly = false) const;
 private:
     chess::Board _board;
 };

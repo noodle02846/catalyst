@@ -4,7 +4,15 @@ bool BoardManager::updateBoard(const std::string_view& fen) {
     return this->_board.setFen(fen);
 }
 
-chess::Movelist BoardManager::getLegalMoves(bool capturesOnly) {
+void BoardManager::pushMove(const chess::Move& move = chess::Move::NULL_MOVE) {
+    this->_board.makeMove(move);
+}
+
+void BoardManager::undoMove(const chess::Move& move= chess::Move::NULL_MOVE) {
+    this->_board.unmakeMove(move);
+}
+
+chess::Movelist BoardManager::getLegalMoves(bool capturesOnly) const {
     constexpr auto allMoves = chess::movegen::MoveGenType::ALL;
     constexpr auto captureMoves = chess::movegen::MoveGenType::ALL;
 
