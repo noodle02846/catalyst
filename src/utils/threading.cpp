@@ -2,13 +2,15 @@
 
 inline std::mutex threadingMutex;
 
-void ThreadManager::addPool(std::function<void()> taskFunc) {
+std::thread& ThreadManager::addPool(std::function<void()> taskFunc) noexcept {
     std::lock_guard<std::mutex> lock(threadingMutex);
 
-    this->_threads.emplace_back(taskFunc);
+    auto thread = std::thread(taskFunc);
+    this->_threads.emplace_back();
+    return this->_threads.back();
 }
 
-void ThreadManager::joinPool() {
+void ThreadManager::joinPool() noexcept {
     std::lock_guard<std::mutex> lock(threadingMutex);
 
     for (auto& thread : this->_threads) {   
@@ -18,7 +20,7 @@ void ThreadManager::joinPool() {
     }
 }
 
-void ThreadManager::detachPool() {
+void ThreadManager::detachPool() noexcept {
     std::lock_guard<std::mutex> lock(threadingMutex);
 
     for (auto& thread : this->_threads) {
@@ -28,7 +30,7 @@ void ThreadManager::detachPool() {
     }
 }
 
-void ThreadManager::clearPool() {
+void ThreadManager::clearPool() noexcept {
     std::lock_guard<std::mutex> lock(threadingMutex);
 
     this->_threads.clear();

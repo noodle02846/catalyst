@@ -16,13 +16,11 @@ public:
         return instance;
     }
 
-    void addPool(std::function<void()> taskFunc);
+    std::thread& addPool(std::function<void()> taskFunc) noexcept;
 
-    void joinPool();
-    void detachPool();
-    void clearPool();
-
-    void waitForPool() const;
+    void joinPool() noexcept;
+    void detachPool() noexcept;
+    void clearPool() noexcept;
 
     [[nodiscard]] std::size_t poolCount() const noexcept;
 private:

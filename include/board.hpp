@@ -11,10 +11,12 @@ class BoardManager {
 public:
     BoardManager() : _board(chess::Board()) {}
 
-    explicit BoardManager(const chess::Board& board) : _board(board) {}
-    explicit BoardManager(const std::string_view& fen) : _board(chess::Board(fen)) {}
+    explicit BoardManager(const chess::Board& board) 
+        : _board(board) {}
+    explicit BoardManager(const std::string_view& fen) 
+        : _board(chess::Board(fen)) {}
 
-    [[nodiscard]] bool updateBoard(const std::string_view& fen = chess::constants::STARTPOS);
+    [[nodiscard]] bool updateBoard(const std::string_view& fen);
 
     void pushMove(const chess::Move& move);
     void undoMove(const chess::Move& move);

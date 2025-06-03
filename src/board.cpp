@@ -13,15 +13,15 @@ void BoardManager::undoMove(const chess::Move& move= chess::Move::NULL_MOVE) {
 }
 
 chess::Movelist BoardManager::getLegalMoves(bool capturesOnly) const {
-    constexpr auto allMoves = chess::movegen::MoveGenType::ALL;
-    constexpr auto captureMoves = chess::movegen::MoveGenType::ALL;
+    constexpr auto kAllMoves = chess::movegen::MoveGenType::ALL;
+    constexpr auto kCaptureMoves = chess::movegen::MoveGenType::CAPTURE;
 
     chess::Movelist moves;
     
     if (capturesOnly) {
-        chess::movegen::legalmoves<allMoves>(moves, this->_board);
+        chess::movegen::legalmoves<kAllMoves>(moves, this->_board);
     } else {
-        chess::movegen::legalmoves<captureMoves>(moves, this->_board);
+        chess::movegen::legalmoves<kCaptureMoves>(moves, this->_board);
     }
 
     return moves;

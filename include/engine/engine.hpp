@@ -12,8 +12,9 @@ class Engine {
 public:
     Engine() = default;
 
-    void startSearch();
+    void startSearch() noexcept;
     void stopSearch() noexcept;
+    [[nodiscard]] bool isSearching() const noexcept;
 private:
-
+    bool _searching{ false };
 };
