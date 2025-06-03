@@ -4,6 +4,8 @@
 #include <uci.hpp>
 #include <version.hpp>
 
+#include <engine/engine.hpp>
+
 #define INIT_COMMAND(protocol, command, handler) \
     protocol.addCommand(command, [this](UCI& p, const std::vector<std::string>& args) { \
         handler(p, args); \
@@ -13,10 +15,12 @@ class CommandManager {
 public:
     CommandManager() = default;
 
+    explicit CommandManager(const Engine& engine) : _engine(engine) {}
+
     void uci(UCI& protocol, const std::vector<std::string>& args) {
-        std::cout << "id name Catalyst v" << CATALYST_VERSION << std::endl;
-        std::cout << "id author Noodle" << std::endl;
-        std::cout << "uciok" << std::endl;
+        protocol.send("id name Catalyst v" + std::string(CATALYST_VERSION));
+        protocol.send("id author Noodle");
+        protocol.send("uciok");
     }
 
     void debug(UCI& protocol, const std::vector<std::string>& args) {
@@ -51,4 +55,6 @@ public:
 private:
     bool _exit{ false };
     bool _debug{ false };
+
+    Engine _engine;
 };

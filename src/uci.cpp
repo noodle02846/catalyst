@@ -1,5 +1,7 @@
 #include <uci.hpp>
 
+inline std::mutex uciMutex;
+
 void UCI::init() {
     this->_boardManager = BoardManager();
 }
@@ -27,6 +29,16 @@ void UCI::loop(UCI& protocol) {
     }
 }
 
+void UCI::send(std::string_view message) const noexcept {
+    std::lock_guard<std::mutex> lock(uciMutex);
+    
+    std::cout << message << std::endl;
+}
+
 void UCI::addCommand(const std::string_view& command, UCICommand handler) {
     this->_commands[command] = handler;
+}
+
+BoardManager UCI::getBoard() const noexcept {
+    return this->_boardManager;
 }

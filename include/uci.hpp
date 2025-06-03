@@ -1,11 +1,13 @@
 #pragma once
 
 // STL Headers
+#include <mutex>
+
 #include <functional>
 #include <unordered_map>
 
 #include <string>
-#include <sstream>
+#include <istream>
 #include <iostream>
 #include <string_view>
 
@@ -24,12 +26,11 @@ public:
 
     void init();
     void loop(UCI& protocol);
+    void send(std::string_view message) const noexcept;
 
     void addCommand(const std::string_view& command, UCICommand handler);
 
-    [[nodiscard]] BoardManager getBoard() const noexcept {
-        return this->_boardManager;
-    }
+    [[nodiscard]] BoardManager getBoard() const noexcept;
 private:
     BoardManager _boardManager;
     std::unordered_map<std::string_view, UCICommand> _commands;
