@@ -50,11 +50,11 @@ public:
         INIT_COMMAND(protocol, "readyok", this->ready);
     }
 
-    [[nodiscard]] bool shouldExit() const noexcept {
+    [[nodiscard]] bool exitable() const noexcept {
         return this->_exit;
     }
 
-    [[nodiscard]] bool debugModeActive() const noexcept {
+    [[nodiscard]] bool debugable() const noexcept {
         return this->_debug;
     }
 private:

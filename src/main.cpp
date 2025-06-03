@@ -9,7 +9,7 @@ int main() {
     uci.init();
     commands.init(uci);
 
-    while (!commands.shouldExit()) {
+    while (!commands.exitable()) {
         uci.loop(uci);
     }
     
