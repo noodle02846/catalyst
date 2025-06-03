@@ -39,10 +39,15 @@ public:
         this->_exit = true;
     }
 
+    void ready(UCI& protocol, const std::vector<std::string>& args) {
+        protocol.send("readyok");
+    }
+
     void init(UCI& protocol) {
         INIT_COMMAND(protocol, "uci", this->uci);
         INIT_COMMAND(protocol, "debug", this->debug);
         INIT_COMMAND(protocol, "quit", this->quit);
+        INIT_COMMAND(protocol, "readyok", this->ready);
     }
 
     [[nodiscard]] bool shouldExit() const noexcept {
