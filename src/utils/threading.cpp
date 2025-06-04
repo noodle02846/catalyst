@@ -6,7 +6,7 @@ std::thread& ThreadManager::addPool(std::function<void()> taskFunc) noexcept {
     std::lock_guard<std::mutex> lock(threadingMutex);
 
     auto thread = std::thread(taskFunc);
-    this->_threads.emplace_back();
+    this->_threads.push_back(std::move(thread));
     return this->_threads.back();
 }
 
@@ -24,9 +24,7 @@ void ThreadManager::detachPool() noexcept {
     std::lock_guard<std::mutex> lock(threadingMutex);
 
     for (auto& thread : this->_threads) {
-        if (thread.joinable()) {
-            thread.detach();
-        }
+        thread.detach();
     }
 }
 

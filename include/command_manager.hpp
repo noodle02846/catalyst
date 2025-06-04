@@ -43,11 +43,21 @@ public:
         protocol.send("readyok");
     }
 
+    void go(UCI& protocol, const std::vector<std::string>& args) {
+        this->_engine.startSearch(protocol);
+    }
+
+    void stop(UCI& protocol, const std::vector<std::string>& args) {
+        this->_engine.stopSearch();
+    }
+
     void init(UCI& protocol) {
         INIT_COMMAND(protocol, "uci", this->uci);
         INIT_COMMAND(protocol, "debug", this->debug);
         INIT_COMMAND(protocol, "quit", this->quit);
-        INIT_COMMAND(protocol, "readyok", this->ready);
+        INIT_COMMAND(protocol, "isready", this->ready);
+        INIT_COMMAND(protocol, "go", this->go);
+        INIT_COMMAND(protocol, "stop", this->stop);
     }
 
     [[nodiscard]] bool exitable() const noexcept {

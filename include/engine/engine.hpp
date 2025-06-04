@@ -7,6 +7,8 @@
 #include <uci.hpp>
 #include <board.hpp>
 
+#include <engine/search.hpp>
+
 #include <utils/threading.hpp>
 
 class Engine {
@@ -18,5 +20,5 @@ public:
 
     [[nodiscard]] bool searching() const noexcept;
 private:
-    bool _searching{ false };
+    Search _search;
 };

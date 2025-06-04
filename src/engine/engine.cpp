@@ -1,23 +1,18 @@
 #include <engine/engine.hpp>
 
-
-
 void Engine::startSearch(UCI& protocol) {
-    this->_searching = true;
-
-    // start search
     ThreadManager::get().addPool([&]() {
+        auto boardManager = protocol.getBoard();
+        auto move = this->_search.start(boardManager);
 
-    });
-
-    ThreadManager::get().detachPool();
+        protocol.send("bestmove " + chess::uci::moveToUci(move));
+    }).detach();
 }
 
 void Engine::stopSearch() {
-    this->_searching = false;
-    // stop search
+    this->_search.stop();
 }
 
 bool Engine::searching() const noexcept {
-    return this->_searching;
+    return this->_search.searching();
 }

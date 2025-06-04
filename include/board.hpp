@@ -9,12 +9,7 @@
 
 class BoardManager {
 public:
-    BoardManager() : _board(chess::Board()) {}
-
-    explicit BoardManager(const chess::Board& board) 
-        : _board(board) {}
-    explicit BoardManager(const std::string_view& fen) 
-        : _board(chess::Board(fen)) {}
+    BoardManager() = default;
 
     [[nodiscard]] bool updateBoard(const std::string_view& fen);
 
