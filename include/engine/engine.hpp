@@ -4,12 +4,13 @@
 #include <chess.hpp>
 
 // Project Headers
-#include <uci.hpp>
 #include <board.hpp>
 
 #include <engine/search.hpp>
 
 #include <utils/threading.hpp>
+
+class UCI;
 
 class Engine {
 public:

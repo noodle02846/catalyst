@@ -1,3 +1,4 @@
+#include <uci.hpp>
 #include <engine/engine.hpp>
 
 void Engine::startSearch(UCI& protocol) {
