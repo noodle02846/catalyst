@@ -16,7 +16,7 @@ This is more or less a personal project for attempting to create a powerful C++ 
 ## Features
 
 > ***Note:*** *Most of these features are either planned or not implemented.*
-> Features that are implemented will have a checkmark next to their names.
+> *Features that are implemented will have a checkmark next to their names.*
 
 * Engine search
   * [x] Iterative deepening.

@@ -1,3 +1,12 @@
+# Basic project setup
+cmake_minimum_required(VERSION 3.13)
+project(Catalyst VERSION ${CATALYST_VERSION} LANGUAGES CXX)
+
+# Set the C++ standard
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
 # Set compiler macros for versioning
 set(CATALYST_VERSION_MAJOR 0)
 set(CATALYST_VERSION_MINOR 10)
@@ -21,15 +30,6 @@ add_definitions(-DCATALYST_VERSION_PATCH=${CATALYST_VERSION_PATCH})
 
 # Full preprocessor macro for version
 add_definitions(-DCATALYST_VERSION="${CATALYST_VERSION}")
-
-# Basic project setup
-cmake_minimum_required(VERSION 3.12)
-project(Catalyst VERSION ${CATALYST_VERSION} LANGUAGES CXX)
-
-# Set the C++ standard
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
 
 # Set the build type to Release by default
 if(NOT CMAKE_BUILD_TYPE)
