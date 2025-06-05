@@ -19,16 +19,16 @@ This is more or less a personal project for attempting to create a powerful C++ 
 > Features that are implemented will have a checkmark next to their names.
 
 * Engine search
-  * Iterative deepening.
-  * Fail-soft Negamax with alpha/beta pruning.
-  * Transposition tables.
-  * Move ordering (MVV-LVA, Promotions).
-  * Quiscent Search.
+  * [x] Iterative deepening.
+  * [x] Fail-soft Negamax with alpha/beta pruning.
+  * [ ] Transposition tables.
+  * [ ] Move ordering (MVV-LVA, Promotions).
+  * [ ] Quiscent Search.
 * Engine evaluation
-  * Board material.
-  * Piece square tables.
-  * Piece mobility.
-  * Tapered eval
+  * [x] Board material.
+  * [ ] Piece square tables.
+  * [ ] Piece mobility.
+  * [ ] Tapered eval
 
 ## Contributing
 
