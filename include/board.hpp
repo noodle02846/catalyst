@@ -11,12 +11,17 @@ class BoardManager {
 public:
     BoardManager() = default;
 
+    [[nodiscard]] chess::Board internal() const noexcept;
     [[nodiscard]] bool updateBoard(const std::string_view& fen);
 
-    void pushMove(const chess::Move& move);
-    void undoMove(const chess::Move& move);
+    void pushMove(chess::Move move);
+    void undoMove(chess::Move move);
+
+    [[nodiscard]] chess::Color turn() const noexcept;
 
     [[nodiscard]] chess::Movelist getLegalMoves(bool capturesOnly = false) const;
+    
+    [[nodiscard]] std::uint8_t getPieceCount(chess::PieceType type, chess::Color color) const noexcept;
 private:
     chess::Board _board;
 };

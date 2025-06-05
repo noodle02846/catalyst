@@ -1,17 +1,23 @@
 #include <board.hpp>
 
-#include <Windows.h>
+chess::Board BoardManager::internal() const noexcept {
+    return this->_board;
+}
 
 bool BoardManager::updateBoard(const std::string_view& fen) {
     return this->_board.setFen(fen);
 }
 
-void BoardManager::pushMove(const chess::Move& move = chess::Move::NULL_MOVE) {
+void BoardManager::pushMove(chess::Move move) {
     this->_board.makeMove(move);
 }
 
-void BoardManager::undoMove(const chess::Move& move = chess::Move::NULL_MOVE) {
+void BoardManager::undoMove(chess::Move move) {
     this->_board.unmakeMove(move);
+}
+
+chess::Color BoardManager::turn() const noexcept {
+    return this->_board.sideToMove();
 }
 
 chess::Movelist BoardManager::getLegalMoves(bool capturesOnly) const {
@@ -21,10 +27,18 @@ chess::Movelist BoardManager::getLegalMoves(bool capturesOnly) const {
     chess::Movelist moves;
     
     if (!capturesOnly) {
-        chess::movegen::legalmoves(moves, this->_board);
+        chess::movegen::legalmoves<kAllMoves>(moves, this->_board);
     } else {
         chess::movegen::legalmoves<kCaptureMoves>(moves, this->_board);
     }
 
     return moves;
+}
+
+std::uint8_t BoardManager::getPieceCount(chess::PieceType type, chess::Color color) const noexcept {
+    if (type == chess::PieceType::NONE || color == chess::Color::NONE) {
+        return 0;
+    }
+
+    return this->_board.pieces(type, color).count();
 }
