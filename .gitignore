@@ -51,8 +51,12 @@ CMakeUserPresets.json
 # External projects
 *-prefix/
 
+### Extra ###
 # Build directories
 build/
 
 # Visual Studio Code
 .vscode/
+
+# Clang
+.cache/

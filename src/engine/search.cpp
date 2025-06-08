@@ -50,11 +50,19 @@ void Search::performIterativeSearch(BoardManager boardManager) noexcept {
             }
         }
 
+#ifdef _MSC_VER
         std::printf(
             "info depth %d score cp %d nodes %llu pv %s\n",
             searchDepth, this->_bestIterationScore, this->_nodesSearched,
             chess::uci::moveToUci(this->_bestIterationMove).c_str()
         );
+#else
+        std::printf(
+            "info depth %d score cp %d nodes %lu pv %s\n",
+            searchDepth, this->_bestIterationScore, this->_nodesSearched,
+            chess::uci::moveToUci(this->_bestIterationMove).c_str()
+        );
+#endif
     }
 }
 
