@@ -20,7 +20,7 @@ This is more or less a personal project for attempting to create a powerful C++ 
 
 * Engine search
   * [x] Iterative deepening.
-  * [x] Fail-soft Negamax with alpha/beta pruning.
+  * [x] Fail-hard Negamax with alpha/beta pruning.
   * [ ] Transposition tables.
   * [ ] Move ordering (MVV-LVA, Promotions).
   * [ ] Quiscent Search.
