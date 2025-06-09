@@ -155,3 +155,7 @@ void UCI::addCommand(const std::string_view& command, UCICommand handler) {
 BoardManager UCI::getBoard() const noexcept {
     return this->_boardManager;
 }
+
+CommandManager UCI::getCommands() const noexcept {
+    return this->_commandManager;
+}
