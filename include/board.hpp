@@ -12,7 +12,7 @@ public:
     BoardManager() = default;
 
     [[nodiscard]] chess::Board internal() const noexcept;
-    [[nodiscard]] bool updateBoard(const std::string_view& fen);
+    void updateBoard(const std::string_view& fen);
 
     void pushMove(chess::Move move);
     void undoMove(chess::Move move);

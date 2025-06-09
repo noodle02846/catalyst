@@ -1,3 +1,4 @@
+#include "chess.hpp"
 #include <uci.hpp>
 
 inline std::mutex uciMutex;
@@ -33,6 +34,55 @@ void CommandManager::ready(UCI& protocol, const std::vector<std::string>& args) 
     protocol.send("readyok");
 }
 
+void CommandManager::ucinewgame(UCI& protocol, const std::vector<std::string>& args) {
+    this->_engine.reset();
+
+    protocol.getBoard().updateBoard(chess::constants::STARTPOS);
+}
+
+void CommandManager::position(UCI& protocol, const std::vector<std::string>& args) {
+    if (args.empty()) {
+        return;
+    }
+
+    std::uint8_t moveIndex = 0xFF;
+    auto boardManager = protocol.getBoard();
+    
+    if (args.at(0) == "startpos") {
+        boardManager.updateBoard(chess::constants::STARTPOS);
+    } else {
+        std::string positionFen;
+
+        for (auto index = 0; index < args.size(); ++index) {
+            auto arg = args.at(index);
+
+            if (arg != "moves") {
+                positionFen += arg;
+
+                if (index != args.size()) {
+                    positionFen += " ";
+                }
+
+                continue;
+            }
+
+            moveIndex = index;
+            break;
+        }
+
+        boardManager.updateBoard(positionFen);
+    }
+
+    if (moveIndex != 0xFF) {
+        auto internalBoard = boardManager.internal();
+
+        for (auto index = moveIndex; index < args.size(); ++index) {
+            auto uciMove = chess::uci::uciToMove(internalBoard, args.at(index));
+            boardManager.pushMove(uciMove);
+        }
+    }
+}
+
 void CommandManager::go(UCI& protocol, const std::vector<std::string>& args) {
     this->_engine.startSearch(protocol);
 }
@@ -49,6 +99,8 @@ void CommandManager::initUci(UCI& protocol) {
 void CommandManager::initCommands(UCI& protocol) {
     INIT_COMMAND(protocol, "debug", this->debug);
     INIT_COMMAND(protocol, "isready", this->ready);
+    INIT_COMMAND(protocol, "ucinewgame", this->ucinewgame);
+    INIT_COMMAND(protocol, "position", this->position);
     INIT_COMMAND(protocol, "go", this->go);
     INIT_COMMAND(protocol, "stop", this->stop);
 }

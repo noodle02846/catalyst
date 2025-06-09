@@ -19,6 +19,8 @@ public:
     void startSearch(UCI& protocol);
     void stopSearch();
 
+    void reset();
+
     [[nodiscard]] bool searching() const noexcept;
 private:
     Search _search;

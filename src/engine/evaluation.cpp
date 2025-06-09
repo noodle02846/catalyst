@@ -1,3 +1,5 @@
+#include "board.hpp"
+#include "chess.hpp"
 #include <engine/evaluation.hpp>
 
 std::int16_t Evaluation::material(BoardManager boardManager, chess::Color color) const noexcept {
@@ -18,17 +20,34 @@ std::int16_t Evaluation::material(BoardManager boardManager, chess::Color color)
     return materialScore;
 }
 
+std::int16_t Evaluation::pieceSquare(BoardManager boardManager, chess::Color color) const noexcept {
+    std::int16_t pieceSquareScore = 0;
+
+    auto chessBoard = boardManager.internal();
+    auto pawnsBoard = chessBoard.pieces(chess::PieceType::PAWN, color);
+
+    for (int pawnIndex = 0; pawnIndex < pawnsBoard.count(); ++pawnIndex) {
+        pieceSquareScore += this->kPawnSquareTable.at(pawnsBoard.pop());
+    }
+
+    return pieceSquareScore;
+}
+
 std::int16_t Evaluation::evaluate(BoardManager boardManager) const noexcept {
     constexpr auto white = chess::Color::WHITE;
     constexpr auto black = chess::Color::BLACK;
 
-    std::int16_t whiteMaterial = this->material(boardManager, white);
-    std::int16_t blackMaterial = this->material(boardManager, black);
+    auto whiteMaterial = this->material(boardManager, white);
+    auto blackMaterial = this->material(boardManager, black);
+
+    auto whitePieceSquare = this->pieceSquare(boardManager, white);
+    auto blackPieceSquare = this->pieceSquare(boardManager, black);
 
     std::int16_t score = 0;
     std::int16_t perspective = boardManager.turn() == white ? 1 : -1;
 
     score += (whiteMaterial - blackMaterial);
+    score += (whitePieceSquare - blackPieceSquare);
 
     return score * perspective;
 }

@@ -14,6 +14,10 @@ void Engine::stopSearch() {
     this->_search.stop();
 }
 
+void Engine::reset() {
+    this->_search.reset();
+}
+
 bool Engine::searching() const noexcept {
     return this->_search.searching();
 }

@@ -83,6 +83,7 @@ void Search::stop() noexcept {
 void Search::reset() noexcept {
     this->_searching = false;
     this->_nodesSearched = 0;
+    
     this->_bestIterationDepth = 0;
     this->_bestIterationScore = -32767;
     this->_bestIterationMove = chess::Move::NULL_MOVE;

@@ -4,8 +4,8 @@ chess::Board BoardManager::internal() const noexcept {
     return this->_board;
 }
 
-bool BoardManager::updateBoard(const std::string_view& fen) {
-    return this->_board.setFen(fen);
+void BoardManager::updateBoard(const std::string_view& fen) {
+    this->_board.setFen(fen);
 }
 
 void BoardManager::pushMove(chess::Move move) {

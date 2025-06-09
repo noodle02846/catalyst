@@ -38,6 +38,8 @@ public:
     void debug(UCI& protocol, const std::vector<std::string>& args);
     void quit(UCI& protocol, const std::vector<std::string>& args);
     void ready(UCI& protocol, const std::vector<std::string>& args);
+    void ucinewgame(UCI& protocol, const std::vector<std::string>& args);
+    void position(UCI& protocol, const std::vector<std::string>& args);
     void go(UCI& protocol, const std::vector<std::string>& args);
     void stop(UCI& protocol, const std::vector<std::string>& args);
 
