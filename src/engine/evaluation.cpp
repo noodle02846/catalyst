@@ -1,5 +1,3 @@
-#include "board.hpp"
-#include "chess.hpp"
 #include <engine/evaluation.hpp>
 
 std::int16_t Evaluation::material(BoardManager boardManager, chess::Color color) const noexcept {
