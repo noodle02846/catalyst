@@ -2,6 +2,6 @@
 #include <uci.hpp>
 
 int main() {
-    UCI::get().start();
+    UCI{}.start();
     return 0;
 }

@@ -64,13 +64,10 @@ using UCICommand = std::function<void(
 
 class UCI {
 public:
-    UCI(const UCI&) = delete;
-    UCI& operator=(const UCI&) = delete;
-
-    [[nodiscard]] static UCI& get() noexcept {
-        static UCI instance;
-        return instance;
-    }
+    UCI() {
+        this->_commandManager.initUci(*this);
+    };
+    ~UCI() = default;
 
     void start();
     void send(std::string_view message) const noexcept;
@@ -84,9 +81,4 @@ private:
     CommandManager _commandManager;
 
     std::unordered_map<std::string_view, UCICommand> _commands;
-
-    UCI() {
-        this->_commandManager.initUci(*this);
-    };
-    ~UCI() = default;
 };
