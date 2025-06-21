@@ -113,8 +113,6 @@ bool CommandManager::debugable() const noexcept {
 }
 
 void UCI::start() {
-    bool canExit = false;
-
     do {
         std::string line;
         std::getline(std::cin, line);
@@ -136,9 +134,7 @@ void UCI::start() {
                 break;
             }
         }
-
-        canExit = this->_commandManager.exitable();
-    } while (!canExit);
+    } while (!this->_commandManager.exitable());
 }
 
 void UCI::send(std::string_view message) const noexcept {
