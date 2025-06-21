@@ -23,7 +23,7 @@
 class UCI;
 
 #define INIT_COMMAND(protocol, command, handler) \
-    protocol.addCommand(command, [this]( \
+    protocol.addCommand(command, [&]( \
         UCI& p, \
         const std::vector<std::string>& args \
     ) { \

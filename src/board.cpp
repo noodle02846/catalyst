@@ -12,6 +12,10 @@ void BoardManager::pushMove(chess::Move move) {
     this->_board.makeMove(move);
 }
 
+void BoardManager::pushMove(const std::string& uciMove) {
+    this->_board.makeMove(chess::uci::uciToMove(this->_board, uciMove));
+}
+
 void BoardManager::undoMove(chess::Move move) {
     this->_board.unmakeMove(move);
 }

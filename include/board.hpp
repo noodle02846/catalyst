@@ -15,6 +15,8 @@ public:
     void updateBoard(const std::string_view& fen);
 
     void pushMove(chess::Move move);
+    void pushMove(const std::string& uciMove);
+
     void undoMove(chess::Move move);
 
     [[nodiscard]] chess::Color turn() const noexcept;

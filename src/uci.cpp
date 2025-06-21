@@ -45,40 +45,39 @@ void CommandManager::position(UCI& protocol, const std::vector<std::string>& arg
         return;
     }
 
-    std::uint8_t moveIndex = 0xFF;
+    std::string positionFen;
+    std::uint8_t moveIndex{ 0xFF };
+
     auto boardManager = protocol.getBoard();
-    
-    if (args.at(0) == "startpos") {
-        boardManager.updateBoard(chess::constants::STARTPOS);
-    } else {
-        std::string positionFen;
 
-        for (auto index = 0; index < args.size(); ++index) {
-            auto arg = args.at(index);
+    for (auto index = 0; index < args.size(); ++index) {
+        auto arg = args.at(index);
 
-            if (arg != "moves") {
-                positionFen += arg;
+        if (arg != "moves") {
+            positionFen += arg;
 
-                if (index != args.size()) {
-                    positionFen += " ";
-                }
-
-                continue;
+            if (index != args.size()) {
+                positionFen += " ";
             }
 
-            moveIndex = index;
-            break;
+            continue;
         }
 
-        boardManager.updateBoard(positionFen);
+        moveIndex = index;
+        break;
     }
 
-    if (moveIndex != 0xFF) {
-        auto internalBoard = boardManager.internal();
+    if (positionFen.size() > 0) {
+        boardManager.updateBoard(positionFen);
+    } else {
+        boardManager.updateBoard(chess::constants::STARTPOS);
+    }
 
-        for (auto index = moveIndex; index < args.size(); ++index) {
-            auto uciMove = chess::uci::uciToMove(internalBoard, args.at(index));
-            boardManager.pushMove(uciMove);
+    std::printf("%d\n", moveIndex);
+
+    if (moveIndex != 0xFF) {
+        for (auto index = moveIndex + 1; index < args.size(); ++index) {
+            boardManager.pushMove(args.at(index));
         }
     }
 }
