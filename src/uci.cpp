@@ -1,4 +1,3 @@
-#include "chess.hpp"
 #include <uci.hpp>
 
 inline std::mutex uciMutex;
@@ -72,8 +71,6 @@ void CommandManager::position(UCI& protocol, const std::vector<std::string>& arg
     } else {
         boardManager.updateBoard(chess::constants::STARTPOS);
     }
-
-    std::printf("%d\n", moveIndex);
 
     if (moveIndex != 0xFF) {
         for (auto index = moveIndex + 1; index < args.size(); ++index) {
