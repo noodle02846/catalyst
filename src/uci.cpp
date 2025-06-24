@@ -44,26 +44,29 @@ void CommandManager::position(UCI& protocol, const std::vector<std::string>& arg
         return;
     }
 
+    size_t index = 0u;
     std::string positionFen;
     std::uint8_t moveIndex{ 0xFF };
 
     auto boardManager = protocol.getBoard();
 
-    for (auto index = 0; index < args.size(); ++index) {
-        auto arg = args.at(index);
+    while (index < args.size()) {
+        auto lastIndex = args.size() - 1;
+        auto argument = args.at(index);
 
-        if (arg != "moves") {
-            positionFen += arg;
-
-            if (index != args.size()) {
-                positionFen += " ";
-            }
-
-            continue;
+        if (argument == "moves" && index != lastIndex) {
+            moveIndex = index;
         }
 
-        moveIndex = index;
-        break;
+        if (index < moveIndex && argument != "startpos") {
+            positionFen += argument;
+
+            if (index != lastIndex) {
+                positionFen += " ";
+            }
+        }
+
+        ++index;
     }
 
     if (positionFen.size() > 0) {
@@ -144,7 +147,7 @@ void UCI::addCommand(const std::string_view& command, UCICommand handler) {
     this->_commands[command] = handler;
 }
 
-BoardManager UCI::getBoard() const noexcept {
+BoardManager UCI::getBoard() noexcept {
     return this->_boardManager;
 }
 

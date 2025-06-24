@@ -1,14 +1,10 @@
 #pragma once
 
 // STL Headers
-#include <mutex>
-
 #include <functional>
 #include <unordered_map>
 
 #include <string>
-#include <istream>
-#include <iostream>
 #include <string_view>
 
 // Library Headers
@@ -74,7 +70,7 @@ public:
 
     void addCommand(const std::string_view& command, UCICommand handler);
 
-    [[nodiscard]] BoardManager getBoard() const noexcept;
+    [[nodiscard]] BoardManager getBoard() noexcept;
     [[nodiscard]] CommandManager getCommands() const noexcept;
 private:
     BoardManager _boardManager;
