@@ -1,8 +1,6 @@
 #pragma once
 
 // STL Headers
-#include <mutex>
-
 #include <functional>
 #include <unordered_map>
 

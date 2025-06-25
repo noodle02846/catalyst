@@ -21,12 +21,15 @@ void UCI::start() {
             std::istream_iterator<std::string>{} 
         };
 
-        for (const auto& [command, handler] : this->_commands) {
-            if (arguments.at(0) == command) {
-                arguments.erase(arguments.begin());
-                handler(*this, arguments);
-                break;
-            }
+        if (arguments.empty()) {
+            return;
+        }
+
+        auto command = this->_commands.find(arguments.at(0));
+
+        if (command != this->_commands.end()) {
+            arguments.erase(arguments.begin());
+            command->second(*this, arguments);
         }
     } while (!this->_commandManager.exitable());
 }
