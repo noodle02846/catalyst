@@ -1,7 +1,7 @@
 # Set compiler macros for versioning
 set(CATALYST_VERSION_MAJOR 0)
-set(CATALYST_VERSION_MINOR 15)
-set(CATALYST_VERSION_PATCH 3)
+set(CATALYST_VERSION_MINOR 16)
+set(CATALYST_VERSION_PATCH 0)
 
 # Pre-release label
 set(CATALYST_VERSION_PRE_RELEASE "alpha")
