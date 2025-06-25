@@ -1,3 +1,4 @@
+#include <cstdio>
 #include <uci.hpp>
 
 inline std::mutex uciMutex;
@@ -36,7 +37,9 @@ void CommandManager::ready(UCI& protocol, const std::vector<std::string>& args) 
 void CommandManager::ucinewgame(UCI& protocol, const std::vector<std::string>& args) {
     this->_engine.reset();
 
-    protocol.getBoard().updateBoard(chess::constants::STARTPOS);
+    auto& boardManager = protocol.getBoard();
+
+    boardManager.updateBoard(chess::constants::STARTPOS);
 }
 
 void CommandManager::position(UCI& protocol, const std::vector<std::string>& args) {
@@ -48,7 +51,7 @@ void CommandManager::position(UCI& protocol, const std::vector<std::string>& arg
     std::string positionFen;
     std::uint8_t moveIndex{ 0xFF };
 
-    auto boardManager = protocol.getBoard();
+    auto& boardManager = protocol.getBoard();
 
     while (index < args.size()) {
         auto lastIndex = args.size() - 1;
@@ -147,7 +150,7 @@ void UCI::addCommand(const std::string_view& command, UCICommand handler) {
     this->_commands[command] = handler;
 }
 
-BoardManager UCI::getBoard() noexcept {
+BoardManager& UCI::getBoard() noexcept {
     return this->_boardManager;
 }
 

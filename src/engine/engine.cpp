@@ -3,7 +3,7 @@
 
 void Engine::startSearch(UCI& protocol) {
     ThreadManager::get().addPool([&]() {
-        auto boardManager = protocol.getBoard();
+        auto& boardManager = protocol.getBoard();
         auto move = this->_search.start(boardManager);
 
         protocol.send("bestmove " + chess::uci::moveToUci(move));

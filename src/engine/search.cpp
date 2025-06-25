@@ -1,7 +1,7 @@
 #include <engine/search.hpp>
 
 std::int16_t Search::performDepthSearch(
-    BoardManager boardManager, 
+    BoardManager& boardManager, 
     std::int8_t depth, std::int16_t alpha, std::int16_t beta
 ) noexcept {
     if (depth == 0 || !this->searching()) {
@@ -33,7 +33,7 @@ std::int16_t Search::performDepthSearch(
     return alpha;
 }
 
-void Search::performIterativeSearch(BoardManager boardManager) noexcept {
+void Search::performIterativeSearch(BoardManager& boardManager) noexcept {
     for (std::int8_t depthSearched = 0; depthSearched < 4; ++depthSearched) {
         auto legalMoves = boardManager.getLegalMoves();
         auto searchDepth = depthSearched + 1;
@@ -66,7 +66,7 @@ void Search::performIterativeSearch(BoardManager boardManager) noexcept {
     }
 }
 
-chess::Move Search::start(BoardManager boardManager) noexcept {
+chess::Move Search::start(BoardManager& boardManager) noexcept {
     this->reset();
     this->_searching = true;
 

@@ -70,7 +70,7 @@ public:
 
     void addCommand(const std::string_view& command, UCICommand handler);
 
-    [[nodiscard]] BoardManager getBoard() noexcept;
+    [[nodiscard]] BoardManager& getBoard() noexcept;
     [[nodiscard]] CommandManager getCommands() const noexcept;
 private:
     BoardManager _boardManager;

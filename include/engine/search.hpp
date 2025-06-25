@@ -13,14 +13,14 @@ public:
     Search() = default;
 
     [[nodiscard]] std::int16_t performDepthSearch(
-        BoardManager boardManager, 
+        BoardManager& boardManager, 
         std::int8_t depth,
         std::int16_t alpha = -32767,
         std::int16_t beta = 32767
     ) noexcept;
-    void performIterativeSearch(BoardManager boardManager) noexcept;
+    void performIterativeSearch(BoardManager& boardManager) noexcept;
 
-    [[nodiscard]] chess::Move start(BoardManager boardManager) noexcept;
+    [[nodiscard]] chess::Move start(BoardManager& boardManager) noexcept;
     void stop() noexcept;
     void reset() noexcept;
 
