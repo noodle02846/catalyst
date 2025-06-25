@@ -3,7 +3,10 @@
 
 inline std::mutex uciMutex;
 
-void CommandManager::uci(UCI& protocol, const std::vector<std::string>& args) {
+void CommandManager::uci(
+    UCI& protocol, 
+    const std::vector<std::string>& args
+) {
     protocol.send("id name Catalyst v" + std::string(CATALYST_VERSION));
     protocol.send("id author Noodle");
     protocol.send("uciok");
@@ -14,7 +17,10 @@ void CommandManager::uci(UCI& protocol, const std::vector<std::string>& args) {
     }
 }
 
-void CommandManager::debug(UCI& protocol, const std::vector<std::string>& args) {
+void CommandManager::debug(
+    UCI& protocol, 
+    const std::vector<std::string>& args
+) {
     if (args.empty()) {
         return;
     }
@@ -26,15 +32,24 @@ void CommandManager::debug(UCI& protocol, const std::vector<std::string>& args) 
     }
 }
 
-void CommandManager::quit(UCI& protocol, const std::vector<std::string>& args) {
+void CommandManager::quit(
+    UCI& protocol, 
+    const std::vector<std::string>& args
+) {
     this->_exit = true;
 }
 
-void CommandManager::ready(UCI& protocol, const std::vector<std::string>& args) {
+void CommandManager::ready(
+    UCI& protocol, 
+    const std::vector<std::string>& args
+) {
     protocol.send("readyok");
 }
 
-void CommandManager::ucinewgame(UCI& protocol, const std::vector<std::string>& args) {
+void CommandManager::ucinewgame(
+    UCI& protocol, 
+    const std::vector<std::string>& args
+) {
     this->_engine.reset();
 
     auto& boardManager = protocol.getBoard();
@@ -42,7 +57,10 @@ void CommandManager::ucinewgame(UCI& protocol, const std::vector<std::string>& a
     boardManager.updateBoard(chess::constants::STARTPOS);
 }
 
-void CommandManager::position(UCI& protocol, const std::vector<std::string>& args) {
+void CommandManager::position(
+    UCI& protocol, 
+    const std::vector<std::string>& args
+) {
     if (args.empty()) {
         return;
     }
@@ -85,11 +103,17 @@ void CommandManager::position(UCI& protocol, const std::vector<std::string>& arg
     }
 }
 
-void CommandManager::go(UCI& protocol, const std::vector<std::string>& args) {
+void CommandManager::go(
+    UCI& protocol, 
+    const std::vector<std::string>& args
+) {
     this->_engine.startSearch(protocol);
 }
 
-void CommandManager::stop(UCI& protocol, const std::vector<std::string>& args) {
+void CommandManager::stop(
+    UCI& protocol, 
+    const std::vector<std::string>& args
+) {
     this->_engine.stopSearch();
 }
 

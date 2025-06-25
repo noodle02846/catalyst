@@ -18,7 +18,9 @@ std::int16_t Search::performDepthSearch(
         }
 
         boardManager.pushMove(move);
-        auto score = -this->performDepthSearch(boardManager, depth - 1, -beta, -alpha);
+        auto score = -this->performDepthSearch(
+            boardManager, depth - 1, -beta, -alpha
+        );
         boardManager.undoMove(move);
 
         if (score >= beta) {
