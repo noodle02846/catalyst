@@ -22,10 +22,31 @@ std::int16_t Evaluation::pieceSquare(BoardManager& boardManager, chess::Color co
     std::int16_t pieceSquareScore = 0;
 
     auto chessBoard = boardManager.internal();
-    auto pawnsBoard = chessBoard.pieces(chess::PieceType::PAWN, color);
 
-    for (int pawnIndex = 0; pawnIndex < pawnsBoard.count(); ++pawnIndex) {
-        pieceSquareScore += this->kPawnSquareTable.at(pawnsBoard.pop());
+    auto pawnBoard = chessBoard.pieces(chess::PieceType::PAWN, color);
+    auto knightBoard = chessBoard.pieces(chess::PieceType::KNIGHT, color);
+    auto bishopBoard = chessBoard.pieces(chess::PieceType::BISHOP, color);
+    auto rookBoard = chessBoard.pieces(chess::PieceType::ROOK, color);
+    auto queenBoard = chessBoard.pieces(chess::PieceType::QUEEN, color);
+
+    while (pawnBoard.count()) {
+        pieceSquareScore += this->kPawnSquareTable[pawnBoard.pop()];
+    }
+
+    while (knightBoard.count()) {
+        pieceSquareScore += this->kKnightSquareTable[knightBoard.pop()];
+    }
+
+    while (bishopBoard.count()) {
+        pieceSquareScore += this->kBishopSquareTable[bishopBoard.pop()];
+    }
+
+    while (rookBoard.count()) {
+        pieceSquareScore += this->kRookSquareTable[rookBoard.pop()];
+    }
+
+    while (queenBoard.count()) {
+        pieceSquareScore += this->kQueenSquareTable[queenBoard.pop()];
     }
 
     return pieceSquareScore;

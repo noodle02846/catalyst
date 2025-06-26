@@ -1,6 +1,7 @@
 #include <engine/search.hpp>
 
 #include <uci.hpp>
+#include "board.hpp"
 
 std::int16_t Search::performDepthSearch(
     BoardManager& boardManager, 

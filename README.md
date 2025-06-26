@@ -23,10 +23,10 @@ This is more or less a personal project for attempting to create a powerful C++ 
   * [x] Fail-hard Negamax with alpha/beta pruning.
   * [ ] Transposition tables.
   * [ ] Move ordering (MVV-LVA, Promotions).
-  * [ ] Quiscent Search.
+  * [ ] Quiescent Search.
 * Engine evaluation
   * [x] Board material.
-  * [ ] Piece square tables.
+  * [x] Piece square tables.
   * [ ] Piece mobility.
   * [ ] Tapered eval
 
