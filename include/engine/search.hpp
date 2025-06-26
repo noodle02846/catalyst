@@ -4,6 +4,7 @@
 #include <board.hpp>
 
 #include <engine/evaluation.hpp>
+#include <engine/transposition.hpp>
 
 // Library Headers
 #include <chess.hpp>
@@ -29,7 +30,9 @@ public:
     [[nodiscard]] bool searching() const noexcept;
 private:
     bool _searching{ false };
+
     Evaluation _evaluation;
+    TT _transposition;
 
     std::int8_t _bestIterationDepth{ 0 };
     std::int16_t _bestIterationScore{ 0 };
