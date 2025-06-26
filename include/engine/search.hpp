@@ -8,6 +8,8 @@
 // Library Headers
 #include <chess.hpp>
 
+class UCI;
+
 class Search {
 public:
     Search() = default;
@@ -18,9 +20,9 @@ public:
         std::int16_t alpha = -32767,
         std::int16_t beta = 32767
     ) noexcept;
-    void performIterativeSearch(BoardManager& boardManager) noexcept;
+    void performIterativeSearch(UCI& protocol) noexcept;
 
-    [[nodiscard]] chess::Move start(BoardManager& boardManager) noexcept;
+    [[nodiscard]] chess::Move start(UCI& protocol) noexcept;
     void stop() noexcept;
     void reset() noexcept;
 

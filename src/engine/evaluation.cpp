@@ -1,6 +1,6 @@
 #include <engine/evaluation.hpp>
 
-std::int16_t Evaluation::material(BoardManager boardManager, chess::Color color) const noexcept {
+std::int16_t Evaluation::material(BoardManager& boardManager, chess::Color color) const noexcept {
     std::int16_t materialScore = 0;
 
     auto pawns = boardManager.getPieceCount(chess::PieceType::PAWN, color);
@@ -18,7 +18,7 @@ std::int16_t Evaluation::material(BoardManager boardManager, chess::Color color)
     return materialScore;
 }
 
-std::int16_t Evaluation::pieceSquare(BoardManager boardManager, chess::Color color) const noexcept {
+std::int16_t Evaluation::pieceSquare(BoardManager& boardManager, chess::Color color) const noexcept {
     std::int16_t pieceSquareScore = 0;
 
     auto chessBoard = boardManager.internal();
@@ -31,7 +31,7 @@ std::int16_t Evaluation::pieceSquare(BoardManager boardManager, chess::Color col
     return pieceSquareScore;
 }
 
-std::int16_t Evaluation::evaluate(BoardManager boardManager) const noexcept {
+std::int16_t Evaluation::evaluate(BoardManager& boardManager) const noexcept {
     constexpr auto white = chess::Color::WHITE;
     constexpr auto black = chess::Color::BLACK;
 

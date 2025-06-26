@@ -1,11 +1,15 @@
 #pragma once
 
 // STL Headers
+#include <mutex>
+
 #include <functional>
 #include <unordered_map>
 
 #include <string>
 #include <string_view>
+
+#include <format>
 
 // Library Headers
 #include <chess.hpp>
@@ -21,12 +25,20 @@ using UCICommand = std::function<void(
     const std::vector<std::string>& args
 )>;
 
+inline std::mutex uciMutex;
+
 class UCI {
 public:
     UCI();
 
     void start();
-    void send(std::string_view message) const noexcept;
+
+    template<typename... Args>
+    void send(std::string_view fmt, Args&&... args) const noexcept {
+        std::lock_guard<std::mutex> lock(uciMutex);
+        
+        std::cout << std::vformat(fmt, std::make_format_args(args...)) << std::endl;
+    }
 
     void addCommand(const std::string_view& command, UCICommand handler);
 

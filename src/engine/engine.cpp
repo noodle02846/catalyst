@@ -1,12 +1,12 @@
-#include <uci.hpp>
 #include <engine/engine.hpp>
+
+#include <uci.hpp>
 
 void Engine::startSearch(UCI& protocol) {
     ThreadManager::get().addPool([&]() {
-        auto& boardManager = protocol.getBoard();
-        auto move = this->_search.start(boardManager);
+        auto move = this->_search.start(protocol);
 
-        protocol.send("bestmove " + chess::uci::moveToUci(move));
+        protocol.send("bestmove {}", chess::uci::moveToUci(move));
     }).detach();
 }
 

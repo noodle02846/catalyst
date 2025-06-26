@@ -1,7 +1,5 @@
 #include <uci.hpp>
 
-inline std::mutex uciMutex;
-
 UCI::UCI() {
     this->_commandManager.initUci(*this);
 }
@@ -32,12 +30,6 @@ void UCI::start() {
             command->second(*this, arguments);
         }
     } while (!this->_commandManager.exitable());
-}
-
-void UCI::send(std::string_view message) const noexcept {
-    std::lock_guard<std::mutex> lock(uciMutex);
-    
-    std::cout << message << std::endl;
 }
 
 void UCI::addCommand(const std::string_view& command, UCICommand handler) {

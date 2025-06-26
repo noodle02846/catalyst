@@ -1,5 +1,7 @@
 #include <engine/search.hpp>
 
+#include <uci.hpp>
+
 std::int16_t Search::performDepthSearch(
     BoardManager& boardManager, 
     std::int8_t depth, std::int16_t alpha, std::int16_t beta
@@ -35,7 +37,9 @@ std::int16_t Search::performDepthSearch(
     return alpha;
 }
 
-void Search::performIterativeSearch(BoardManager& boardManager) noexcept {
+void Search::performIterativeSearch(UCI& protocol) noexcept {
+    auto& boardManager = protocol.getBoard();
+
     for (std::int8_t depthSearched = 0; depthSearched < 4; ++depthSearched) {
         auto legalMoves = boardManager.getLegalMoves();
         auto searchDepth = depthSearched + 1;
@@ -52,27 +56,19 @@ void Search::performIterativeSearch(BoardManager& boardManager) noexcept {
             }
         }
 
-#ifdef _MSC_VER
-        std::printf(
-            "info depth %d score cp %d nodes %llu pv %s\n",
+        protocol.send(
+            "info depth {} score cp {} nodes {} pv {}",
             searchDepth, this->_bestIterationScore, this->_nodesSearched,
             chess::uci::moveToUci(this->_bestIterationMove).c_str()
         );
-#else
-        std::printf(
-            "info depth %d score cp %d nodes %lu pv %s\n",
-            searchDepth, this->_bestIterationScore, this->_nodesSearched,
-            chess::uci::moveToUci(this->_bestIterationMove).c_str()
-        );
-#endif
     }
 }
 
-chess::Move Search::start(BoardManager& boardManager) noexcept {
+chess::Move Search::start(UCI& protocol) noexcept {
     this->reset();
     this->_searching = true;
 
-    this->performIterativeSearch(boardManager);
+    this->performIterativeSearch(protocol);
     return this->_bestIterationMove;
 }
 

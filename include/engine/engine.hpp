@@ -4,6 +4,7 @@
 #include <chess.hpp>
 
 // Project Headers
+
 #include <board.hpp>
 
 #include <engine/search.hpp>

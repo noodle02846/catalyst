@@ -30,8 +30,8 @@ public:
         -20, -20, -20, -20, -20, -20, -20, -20
     };
 
-    [[nodiscard]] std::int16_t material(BoardManager boardManager, chess::Color color) const noexcept;
-    [[nodiscard]] std::int16_t pieceSquare(BoardManager boardManager, chess::Color color) const noexcept;
+    [[nodiscard]] std::int16_t material(BoardManager& boardManager, chess::Color color) const noexcept;
+    [[nodiscard]] std::int16_t pieceSquare(BoardManager& boardManager, chess::Color color) const noexcept;
 
-    [[nodiscard]] std::int16_t evaluate(BoardManager boardManager) const noexcept;
+    [[nodiscard]] std::int16_t evaluate(BoardManager& boardManager) const noexcept;
 };
