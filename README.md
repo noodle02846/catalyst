@@ -8,6 +8,8 @@ This is more or less a personal project for attempting to create a powerful C++ 
 - [Catalyst ](#catalyst-)
   - [Table of Contents](#table-of-contents)
   - [Features](#features)
+  - [Requirements](#requirements)
+  - [Installation](#installation)
   - [Contributing](#contributing)
   - [Authors](#authors)
   - [Acknowledgements](#acknowledgements)
@@ -29,6 +31,22 @@ This is more or less a personal project for attempting to create a powerful C++ 
   * [x] Piece square tables.
   * [ ] Piece mobility.
   * [ ] Tapered eval
+
+## Requirements
+
+> Compiler must be a version compatible with C++20
+
+- GCC, Clang, MSVC
+- CMake (>= Version 3.13)
+
+## Installation
+
+```sh
+git clone --recurse-submodules https://github.com/noodle02846/catalyst.git
+cd catalyst
+cmake -B build
+cmake --build build
+```
 
 ## Contributing
 
