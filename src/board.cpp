@@ -39,7 +39,10 @@ chess::Movelist BoardManager::getLegalMoves(bool capturesOnly) const {
     return moves;
 }
 
-std::uint8_t BoardManager::getPieceCount(chess::PieceType type, chess::Color color) const noexcept {
+std::uint8_t BoardManager::getPieceCount(
+    chess::PieceType type, 
+    chess::Color color
+) const noexcept {
     if (type == chess::PieceType::NONE || color == chess::Color::NONE) {
         return 0;
     }

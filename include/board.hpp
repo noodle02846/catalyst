@@ -21,9 +21,11 @@ public:
 
     [[nodiscard]] chess::Color turn() const noexcept;
 
-    [[nodiscard]] chess::Movelist getLegalMoves(bool capturesOnly = false) const;
+    [[nodiscard]] chess::Movelist getLegalMoves(
+        bool capturesOnly = false) const;
     
-    [[nodiscard]] std::uint8_t getPieceCount(chess::PieceType type, chess::Color color) const noexcept;
+    [[nodiscard]] std::uint8_t getPieceCount(
+        chess::PieceType type, chess::Color color) const noexcept;
 private:
     chess::Board _board;
 };
