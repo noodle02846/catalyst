@@ -25,12 +25,17 @@ public:
     [[nodiscard]] TTFlag flag() const noexcept;
     [[nodiscard]] bool valid() const noexcept;
 
-    void setEvaluation() noexcept;
-    void setDepth() noexcept;
-    void setFlag() noexcept;
-    void setValid() noexcept;
+    void setEvaluation(std::int16_t eval) noexcept;
+    void setDepth(std::uint8_t depth) noexcept;
+    void setFlag(TTFlag flag) noexcept;
+    void setValid(bool valid) noexcept;
 private:
-    std::uint32_t _bits;
+    static constexpr auto _evalMask{ 0xFFFF };
+    static constexpr auto _depthMask{ 0xFF };
+    static constexpr auto _flagMask{ 0x3F };
+    static constexpr auto _validMask{ 0x03 };
+
+    std::uint32_t _bits{ NULL };
 };
 
 class TT {
