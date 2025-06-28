@@ -1,21 +1,21 @@
 #include <engine/evaluation.hpp>
 
-std::int16_t Evaluation::pieceValue(chess::PieceType pieceType) const noexcept {
+std::int16_t Evaluation::pieceValue(chess::PieceType pieceType) noexcept {
     switch (pieceType.internal()) {
     case chess::PieceType::NONE:
         return 0;
     case chess::PieceType::PAWN:
-        return this->kPawnValue;
+        return Evaluation::kPawnValue;
     case chess::PieceType::KNIGHT:
-        return this->kKnightValue;
+        return Evaluation::kKnightValue;
     case chess::PieceType::BISHOP:
-        return this->kBishopValue;
+        return Evaluation::kBishopValue;
     case chess::PieceType::ROOK:
-        return this->kRookValue;
+        return Evaluation::kRookValue;
     case chess::PieceType::QUEEN:
-        return this->kQueenValue;
+        return Evaluation::kQueenValue;
     case chess::PieceType::KING:
-        return this->kKingValue;
+        return Evaluation::kKingValue;
     }
 }
 

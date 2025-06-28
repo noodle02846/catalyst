@@ -7,6 +7,7 @@
 #include <board.hpp>
 
 #include <engine/evaluation.hpp>
+#include <engine/move_orderer.hpp>
 #include <engine/transposition.hpp>
 
 // Library Headers
@@ -17,11 +18,6 @@ class UCI;
 class Search {
 public:
     Search() = default;
-
-    [[nodiscard]] chess::Movelist getOrderedMoves(
-        BoardManager& boardManager,
-        chess::Move ttMove,
-        std::uint8_t depth) const noexcept;
 
     [[nodiscard]] std::int16_t performDepthSearch(
         BoardManager& boardManager,
@@ -40,6 +36,7 @@ private:
 
     bool _searching{ false };
 
+    MoveOrderer _moveOrderer;
     Evaluation _evaluation;
     TT _transposition;
 
@@ -48,6 +45,4 @@ private:
     chess::Move _bestIterationMove{ chess::Move::NULL_MOVE };
 
     std::uint64_t _nodesSearched{ 0 };
-
-    std::array<std::array<chess::Move, kMaxDepth>, 2> _killerMoves;
 };

@@ -82,8 +82,8 @@ public:
         -20,-10,-10, -5, -5,-10,-10,-20
     };
 
-    [[nodiscard]] std::int16_t pieceValue(
-        chess::PieceType pieceType) const noexcept;
+    [[nodiscard]] static std::int16_t pieceValue(
+        chess::PieceType pieceType) noexcept;
 
     [[nodiscard]] std::int16_t material(
         BoardManager& boardManager, chess::Color color) const noexcept;

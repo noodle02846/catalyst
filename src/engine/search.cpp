@@ -2,53 +2,6 @@
 
 #include <uci.hpp>
 
-chess::Movelist Search::getOrderedMoves(
-    BoardManager& boardManager, 
-    chess::Move ttMove,
-    std::uint8_t depth
-) const noexcept {
-    auto chessBoard = boardManager.internal();
-    auto legalMoves = boardManager.getLegalMoves();
-
-    for (auto& move : legalMoves) {
-        std::int16_t score = 0;
-        auto promotionType = move.promotionType();
-
-        if (move == ttMove) {
-            score = 32767;
-        }
-
-        if (chessBoard.isCapture(move)) {
-            auto victim = chessBoard.at(move.to()).type();
-            auto attacker = chessBoard.at(move.from()).type();
-
-            score += 90 + (this->_evaluation.pieceValue(victim) * 10
-                - this->_evaluation.pieceValue(attacker));
-        }
-
-        if (promotionType != chess::PieceType::NONE) {
-            score += 80 + this->_evaluation.pieceValue(promotionType) * 2;
-        }
-
-        if (this->_killerMoves[0][depth] == move || 
-            this->_killerMoves[1][depth] == move
-        ) {
-            score += 70;
-        }
-
-        move.setScore(score);
-    }
-
-    std::sort(
-        legalMoves.begin(), 
-        legalMoves.end(), 
-        [](const chess::Move& a, const chess::Move& b) {
-        return a.score() > b.score();
-    });
-
-    return legalMoves;
-}
-
 std::int16_t Search::performDepthSearch(
     BoardManager& boardManager, 
     std::uint8_t depth,
@@ -76,7 +29,7 @@ std::int16_t Search::performDepthSearch(
         return this->_evaluation.evaluate(boardManager);
     }
 
-    auto legalMoves = this->getOrderedMoves(
+    auto legalMoves = this->_moveOrderer.getMoves(
         boardManager,
         (entry.valid() && entry.move() != chess::Move::NO_MOVE)
         ? entry.move() : chess::Move::NO_MOVE, depth
@@ -106,13 +59,7 @@ std::int16_t Search::performDepthSearch(
         alpha = std::max(alpha, bestScore);
 
         if (bestScore >= beta) {
-            if (!chessBoard.isCapture(move) && 
-                this->_killerMoves[0][depth] != move
-            ) {
-                this->_killerMoves[1][depth] = this->_killerMoves[0][depth];
-                this->_killerMoves[0][depth] = move;
-            }
-
+            this->_moveOrderer.storeKillerMove(boardManager, move, depth);
             return bestScore;
         }
     }
