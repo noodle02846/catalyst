@@ -1,5 +1,8 @@
 #pragma once
 
+// STL Headers
+#include <algorithm>
+
 // Project Headers
 #include <board.hpp>
 

@@ -1,17 +1,34 @@
 #include <engine/search.hpp>
 
 #include <uci.hpp>
-#include "board.hpp"
 
 std::int16_t Search::performDepthSearch(
     BoardManager& boardManager, 
     std::int8_t depth, std::int16_t alpha, std::int16_t beta
 ) noexcept {
+    auto zobristKey = boardManager.internal().zobrist();
+    auto entry = this->_transposition.get(zobristKey);
+
+    if (entry.valid() && entry.depth() >= depth) {
+        auto flag = entry.flag();
+        auto score = entry.evaluation();
+
+        if (flag == TTFlag::EXACT ||
+            (flag == TTFlag::LOWERBOUND) && score >= beta ||
+            (flag == TTFlag::UPPERBOUND) && score <= alpha
+        ) {
+            return score;
+        }
+    }
+
     if (depth == 0 || !this->searching()) {
         return this->_evaluation.evaluate(boardManager);
     }
 
     auto legalMoves = boardManager.getLegalMoves();
+
+    std::int16_t bestScore = -32767;
+    auto bestMove = chess::Move::NO_MOVE;
 
     for (auto move : legalMoves) {
         this->_nodesSearched++;
@@ -26,16 +43,34 @@ std::int16_t Search::performDepthSearch(
         );
         boardManager.undoMove(move);
 
-        if (score >= beta) {
-            return beta;
+        if (score > bestScore) {
+            bestScore = score;
+            bestMove = move.move();
         }
 
-        if (score > alpha) {
-            alpha = score;
+        alpha = std::max(alpha, bestScore);
+
+        if (alpha >= beta) {
+            break;
         }
     }
 
-    return alpha;
+    auto flag = TTFlag::EXACT;
+
+    if (bestScore <= alpha) {
+        flag = TTFlag::UPPERBOUND;
+    } else if (bestScore >= beta) {
+        flag = TTFlag::LOWERBOUND;
+    }
+
+    entry.setFlag(flag)
+        .setValid(true)
+        .setDepth(depth)
+        .setMove(bestMove)
+        .setEvaluation(bestScore);
+
+    this->_transposition.store(zobristKey, entry);
+    return bestScore;
 }
 
 void Search::performIterativeSearch(UCI& protocol) noexcept {
@@ -44,6 +79,9 @@ void Search::performIterativeSearch(UCI& protocol) noexcept {
     for (std::int8_t depthSearched = 0; depthSearched < 4; ++depthSearched) {
         auto legalMoves = boardManager.getLegalMoves();
         auto searchDepth = depthSearched + 1;
+
+        this->_bestIterationScore = -32767;
+        this->_bestIterationMove = legalMoves.at(0);
 
         for (auto move : legalMoves) {
             boardManager.pushMove(move);
@@ -86,6 +124,8 @@ void Search::reset() noexcept {
     this->_bestIterationDepth = 0;
     this->_bestIterationScore = -32767;
     this->_bestIterationMove = chess::Move::NULL_MOVE;
+
+    this->_transposition.clear();
 }
 
 bool Search::searching() const noexcept {
