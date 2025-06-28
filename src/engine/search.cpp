@@ -2,11 +2,62 @@
 
 #include <uci.hpp>
 
+chess::Movelist Search::getOrderedMoves(
+    BoardManager& boardManager, 
+    chess::Move ttMove,
+    std::uint8_t depth
+) const noexcept {
+    auto chessBoard = boardManager.internal();
+    auto legalMoves = boardManager.getLegalMoves();
+
+    for (auto& move : legalMoves) {
+        std::int16_t score = 0;
+        auto promotionType = move.promotionType();
+
+        if (move == ttMove) {
+            score = 32767;
+        }
+
+        if (chessBoard.isCapture(move)) {
+            auto victim = chessBoard.at(move.to()).type();
+            auto attacker = chessBoard.at(move.from()).type();
+
+            score += 90 + (this->_evaluation.pieceValue(victim) * 10
+                - this->_evaluation.pieceValue(attacker));
+        }
+
+        if (promotionType != chess::PieceType::NONE) {
+            score += 80 + this->_evaluation.pieceValue(promotionType) * 2;
+        }
+
+        if (this->_killerMoves[0][depth] == move || 
+            this->_killerMoves[1][depth] == move
+        ) {
+            score += 70;
+        }
+
+        move.setScore(score);
+    }
+
+    std::sort(
+        legalMoves.begin(), 
+        legalMoves.end(), 
+        [](const chess::Move& a, const chess::Move& b) {
+        return a.score() > b.score();
+    });
+
+    return legalMoves;
+}
+
 std::int16_t Search::performDepthSearch(
     BoardManager& boardManager, 
-    std::int8_t depth, std::int16_t alpha, std::int16_t beta
+    std::uint8_t depth,
+    std::int16_t alpha,
+    std::int16_t beta
 ) noexcept {
-    auto zobristKey = boardManager.internal().zobrist();
+    auto chessBoard = boardManager.internal();
+
+    auto zobristKey = chessBoard.zobrist();
     auto entry = this->_transposition.get(zobristKey);
 
     if (entry.valid() && entry.depth() >= depth) {
@@ -25,7 +76,11 @@ std::int16_t Search::performDepthSearch(
         return this->_evaluation.evaluate(boardManager);
     }
 
-    auto legalMoves = boardManager.getLegalMoves();
+    auto legalMoves = this->getOrderedMoves(
+        boardManager,
+        (entry.valid() && entry.move() != chess::Move::NO_MOVE)
+        ? entry.move() : chess::Move::NO_MOVE, depth
+    );
 
     std::int16_t bestScore = -32767;
     auto bestMove = chess::Move::NO_MOVE;
@@ -50,8 +105,15 @@ std::int16_t Search::performDepthSearch(
 
         alpha = std::max(alpha, bestScore);
 
-        if (alpha >= beta) {
-            break;
+        if (bestScore >= beta) {
+            if (!chessBoard.isCapture(move) && 
+                this->_killerMoves[0][depth] != move
+            ) {
+                this->_killerMoves[1][depth] = this->_killerMoves[0][depth];
+                this->_killerMoves[0][depth] = move;
+            }
+
+            return bestScore;
         }
     }
 
@@ -76,12 +138,9 @@ std::int16_t Search::performDepthSearch(
 void Search::performIterativeSearch(UCI& protocol) noexcept {
     auto& boardManager = protocol.getBoard();
 
-    for (std::int8_t depthSearched = 0; depthSearched < 4; ++depthSearched) {
+    for (std::int8_t depthSearched = 0; depthSearched < this->kMaxDepth; ++depthSearched) {
         auto legalMoves = boardManager.getLegalMoves();
         auto searchDepth = depthSearched + 1;
-
-        this->_bestIterationScore = -32767;
-        this->_bestIterationMove = legalMoves.at(0);
 
         for (auto move : legalMoves) {
             boardManager.pushMove(move);
@@ -101,6 +160,9 @@ void Search::performIterativeSearch(UCI& protocol) noexcept {
             chess::uci::moveToUci(this->_bestIterationMove).c_str()
         );
     }
+
+    // @DEBUG:
+    // protocol.send("info string TT Size: {}", this->_transposition.size());
 }
 
 chess::Move Search::start(UCI& protocol) noexcept {

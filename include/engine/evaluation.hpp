@@ -14,10 +14,18 @@ public:
     Evaluation() = default;
 
     static constexpr std::int16_t kPawnValue = 10;
-    static constexpr std::int16_t kKnightValue = 30;
+    static constexpr std::int16_t kKnightValue = 32;
     static constexpr std::int16_t kBishopValue = 35;
     static constexpr std::int16_t kRookValue = 50;
     static constexpr std::int16_t kQueenValue = 90;
+    static constexpr std::int16_t kKingValue = 200;
+
+    static constexpr chess::PieceType kPawn = chess::PieceType::PAWN;
+    static constexpr chess::PieceType kKnight = chess::PieceType::KNIGHT;
+    static constexpr chess::PieceType kBishop = chess::PieceType::BISHOP;
+    static constexpr chess::PieceType kRook = chess::PieceType::ROOK;
+    static constexpr chess::PieceType kQueen = chess::PieceType::QUEEN;
+    static constexpr chess::PieceType kKing = chess::PieceType::KING;
 
     static constexpr std::array<std::int8_t, 64> kPawnSquareTable{
         0, 0, 0, 0, 0, 0, 0, 0,
@@ -73,6 +81,9 @@ public:
         -10,  0,  5,  0,  0,  0,  0,-10,
         -20,-10,-10, -5, -5,-10,-10,-20
     };
+
+    [[nodiscard]] std::int16_t pieceValue(
+        chess::PieceType pieceType) const noexcept;
 
     [[nodiscard]] std::int16_t material(
         BoardManager& boardManager, chess::Color color) const noexcept;

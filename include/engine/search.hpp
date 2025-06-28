@@ -18,12 +18,16 @@ class Search {
 public:
     Search() = default;
 
+    [[nodiscard]] chess::Movelist getOrderedMoves(
+        BoardManager& boardManager,
+        chess::Move ttMove,
+        std::uint8_t depth) const noexcept;
+
     [[nodiscard]] std::int16_t performDepthSearch(
-        BoardManager& boardManager, 
-        std::int8_t depth,
+        BoardManager& boardManager,
+        std::uint8_t depth,
         std::int16_t alpha = -32767,
-        std::int16_t beta = 32767
-    ) noexcept;
+        std::int16_t beta = 32767) noexcept;
     void performIterativeSearch(UCI& protocol) noexcept;
 
     [[nodiscard]] chess::Move start(UCI& protocol) noexcept;
@@ -32,6 +36,8 @@ public:
 
     [[nodiscard]] bool searching() const noexcept;
 private:
+    static constexpr int kMaxDepth = 8;
+
     bool _searching{ false };
 
     Evaluation _evaluation;
@@ -42,4 +48,6 @@ private:
     chess::Move _bestIterationMove{ chess::Move::NULL_MOVE };
 
     std::uint64_t _nodesSearched{ 0 };
+
+    std::array<std::array<chess::Move, kMaxDepth>, 2> _killerMoves;
 };

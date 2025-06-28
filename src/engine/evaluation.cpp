@@ -1,16 +1,35 @@
 #include <engine/evaluation.hpp>
 
+std::int16_t Evaluation::pieceValue(chess::PieceType pieceType) const noexcept {
+    switch (pieceType.internal()) {
+    case chess::PieceType::NONE:
+        return 0;
+    case chess::PieceType::PAWN:
+        return this->kPawnValue;
+    case chess::PieceType::KNIGHT:
+        return this->kKnightValue;
+    case chess::PieceType::BISHOP:
+        return this->kBishopValue;
+    case chess::PieceType::ROOK:
+        return this->kRookValue;
+    case chess::PieceType::QUEEN:
+        return this->kQueenValue;
+    case chess::PieceType::KING:
+        return this->kKingValue;
+    }
+}
+
 std::int16_t Evaluation::material(
     BoardManager& boardManager, 
     chess::Color color
 ) const noexcept {
     std::int16_t materialScore = 0;
 
-    auto pawns = boardManager.getPieceCount(chess::PieceType::PAWN, color);
-    auto knights = boardManager.getPieceCount(chess::PieceType::KNIGHT, color);
-    auto bishops = boardManager.getPieceCount(chess::PieceType::BISHOP, color);
-    auto rooks = boardManager.getPieceCount(chess::PieceType::ROOK, color);
-    auto queens = boardManager.getPieceCount(chess::PieceType::QUEEN, color);
+    auto pawns = boardManager.getPieceCount(this->kPawn, color);
+    auto knights = boardManager.getPieceCount(this->kKnight, color);
+    auto bishops = boardManager.getPieceCount(this->kBishop, color);
+    auto rooks = boardManager.getPieceCount(this->kRook, color);
+    auto queens = boardManager.getPieceCount(this->kQueen, color);
 
     materialScore += pawns * this->kPawnValue;
     materialScore += knights * this->kKnightValue;
@@ -29,11 +48,11 @@ std::int16_t Evaluation::pieceSquare(
 
     auto chessBoard = boardManager.internal();
 
-    auto pawnBoard = chessBoard.pieces(chess::PieceType::PAWN, color);
-    auto knightBoard = chessBoard.pieces(chess::PieceType::KNIGHT, color);
-    auto bishopBoard = chessBoard.pieces(chess::PieceType::BISHOP, color);
-    auto rookBoard = chessBoard.pieces(chess::PieceType::ROOK, color);
-    auto queenBoard = chessBoard.pieces(chess::PieceType::QUEEN, color);
+    auto pawnBoard = chessBoard.pieces(this->kPawn, color);
+    auto knightBoard = chessBoard.pieces(this->kKnight, color);
+    auto bishopBoard = chessBoard.pieces(this->kBishop, color);
+    auto rookBoard = chessBoard.pieces(this->kRook, color);
+    auto queenBoard = chessBoard.pieces(this->kQueen, color);
 
     while (pawnBoard.count()) {
         pieceSquareScore += this->kPawnSquareTable[pawnBoard.pop()];

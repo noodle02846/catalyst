@@ -5,7 +5,7 @@
 
 #include <vector>
 
-inline static constexpr std::uint32_t kMaxEntries{ 0x100000 };
+inline static constexpr std::uint32_t kMaxEntries{ 0x800000 };
 
 enum class TTFlag : std::uint8_t {
     EXACT = 0,

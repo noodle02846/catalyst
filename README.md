@@ -22,15 +22,23 @@ This is more or less a personal project for attempting to create a powerful C++ 
 
 * Engine search
   * [x] Iterative deepening.
-  * [x] Fail-hard Negamax with alpha/beta pruning.
-  * [ ] Transposition tables.
-  * [ ] Move ordering (MVV-LVA, Promotions).
-  * [ ] Quiescent Search.
+  * [x] Fail-soft Negamax with alpha/beta pruning.
+  * [x] Transposition tables.
+  * [x] Move ordering.
+    * [x] TT/Hash-Move.
+    * [x] MVV-LVA.
+    * [x] Promotions.
+    * [x] Killer moves.
+    * [ ] History heuristic.
+    * [ ] Static exchange evaluation.
+  * [ ] Quiescence Search.
 * Engine evaluation
   * [x] Board material.
   * [x] Piece square tables.
+  * [ ] Tapered eval.
+  * [ ] Mop-up eval.
   * [ ] Piece mobility.
-  * [ ] Tapered eval
+  * [ ] Piece evaluation.
 
 ## Requirements
 
