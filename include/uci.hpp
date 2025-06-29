@@ -37,7 +37,8 @@ public:
     void send(std::string_view fmt, Args&&... args) const noexcept {
         std::lock_guard<std::mutex> lock(uciMutex);
         
-        std::cout << std::vformat(fmt, std::make_format_args(args...)) << std::endl;
+        std::cout << 
+            std::vformat(fmt, std::make_format_args(args...)) << std::endl;
     }
 
     void addCommand(const std::string_view& command, UCICommand handler);
