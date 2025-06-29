@@ -53,7 +53,7 @@ This is more or less a personal project for attempting to create a powerful C++ 
 git clone --recurse-submodules https://github.com/noodle02846/catalyst.git
 cd catalyst
 cmake -B build
-cmake --build build
+cmake --build build --config Release --target Catalyst -j 10 --
 ```
 
 ## Contributing
