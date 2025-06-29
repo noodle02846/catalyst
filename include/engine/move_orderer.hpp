@@ -14,7 +14,8 @@ public:
         BoardManager& boardManager,
         chess::Move ttMove,
         std::uint8_t depth) const noexcept;
-    void sortMoves(chess::Movelist& moves) const noexcept;
+    [[nodiscard]] chess::Movelist sortMoves(
+        chess::Movelist moves) const noexcept;
     [[nodiscard]] chess::Movelist getMoves(
         BoardManager& boardManager,
         chess::Move ttMove,
@@ -28,5 +29,5 @@ public:
 private:
     static constexpr int kMaxKillerMoves = 2;
 
-    std::array<std::array<chess::Move, kMaxKillerMoves>, 2> _killerMoves;
+    std::array<std::array<chess::Move, 64>, kMaxKillerMoves> _killerMoves;
 };

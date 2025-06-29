@@ -85,9 +85,9 @@ std::int16_t Search::performDepthSearch(
 void Search::performIterativeSearch(UCI& protocol) noexcept {
     auto& boardManager = protocol.getBoard();
 
-    for (std::int8_t depthSearched = 0; depthSearched < this->kMaxDepth; ++depthSearched) {
+    for (std::int8_t depth = 0; depth < this->kMaxDepth; ++depth) {
         auto legalMoves = boardManager.getLegalMoves();
-        auto searchDepth = depthSearched + 1;
+        auto searchDepth = depth + 1;
 
         for (auto move : legalMoves) {
             boardManager.pushMove(move);

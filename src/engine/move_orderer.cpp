@@ -27,7 +27,7 @@ chess::Movelist MoveOrderer::scoreMoves(
         if (promotionType != chess::PieceType::NONE) {
             score += 80 + Evaluation::pieceValue(promotionType) * 2;
         }
-
+        
         if (this->_killerMoves[0][depth] == move || 
             this->_killerMoves[1][depth] == move
         ) {
@@ -40,13 +40,15 @@ chess::Movelist MoveOrderer::scoreMoves(
     return legalMoves;
 }
 
-void MoveOrderer::sortMoves(chess::Movelist& moves) const noexcept {
+chess::Movelist MoveOrderer::sortMoves(chess::Movelist moves) const noexcept {
     std::sort(
     moves.begin(), 
     moves.end(), 
     [](const chess::Move& a, const chess::Move& b) {
         return a.score() > b.score();
     });
+
+    return moves;
 }
 
 chess::Movelist MoveOrderer::getMoves(
@@ -54,9 +56,10 @@ chess::Movelist MoveOrderer::getMoves(
     chess::Move ttMove,
     std::uint8_t depth
 ) const noexcept {
-    auto moves = this->scoreMoves(boardManager, ttMove, depth);
-    this->sortMoves(moves);
-    return moves;
+    auto scoredMoves = this->scoreMoves(boardManager, ttMove, depth);
+    auto sortedMoves = this->sortMoves(scoredMoves);
+
+    return sortedMoves;
 }
 
 void MoveOrderer::storeKillerMove(
