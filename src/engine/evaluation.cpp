@@ -16,6 +16,8 @@ std::int16_t Evaluation::pieceValue(chess::PieceType pieceType) noexcept {
         return Evaluation::kQueenValue;
     case chess::PieceType::KING:
         return Evaluation::kKingValue;
+    default:
+        return 0;
     }
 }
 

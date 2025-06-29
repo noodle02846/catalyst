@@ -19,12 +19,16 @@ class Search {
 public:
     Search() = default;
 
-    [[nodiscard]] std::int16_t performDepthSearch(
+    [[nodiscard]] std::int16_t quiescenceSearch(
+        BoardManager& boardManager,
+        std::int16_t alpha = -32767,
+        std::int16_t beta = 32767) noexcept;
+    [[nodiscard]] std::int16_t depthSearch(
         BoardManager& boardManager,
         std::uint8_t depth,
         std::int16_t alpha = -32767,
         std::int16_t beta = 32767) noexcept;
-    void performIterativeSearch(UCI& protocol) noexcept;
+    void iterativeSearch(UCI& protocol) noexcept;
 
     [[nodiscard]] chess::Move start(UCI& protocol) noexcept;
     void stop() noexcept;

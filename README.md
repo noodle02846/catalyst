@@ -28,10 +28,10 @@ This is more or less a personal project for attempting to create a powerful C++ 
     * [x] TT/Hash-Move.
     * [x] MVV-LVA.
     * [x] Promotions.
-    * [x] Killer moves.
+    * [x] Killer heuristic.
     * [ ] History heuristic.
     * [ ] Static exchange evaluation.
-  * [ ] Quiescence Search.
+  * [x] Quiescence Search.
 * Engine evaluation
   * [x] Board material.
   * [x] Piece square tables.
