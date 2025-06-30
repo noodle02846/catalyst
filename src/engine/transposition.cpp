@@ -79,7 +79,12 @@ void TT::clear() noexcept {
 }
 
 void TT::store(std::uint64_t zobristKey, TTEntry entry) noexcept {
-    this->_entries[zobristKey % kMaxEntries] = entry;
+    const auto key = zobristKey % kMaxEntries;
+    const auto previousEntry = this->get(zobristKey);
+
+    if (!previousEntry.valid() || entry.depth() >= previousEntry.depth()) {
+        this->_entries[key] = entry;
+    }
 }
 
 TTEntry TT::get(std::uint64_t zobristKey) const noexcept {
