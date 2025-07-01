@@ -18,7 +18,7 @@ chess::Movelist MoveOrderer::scoreMoves(
         const auto isCapture = chessBoard.isCapture(move);
 
         if (move == ttMove) {
-            score = 32767;
+            score = this->kTTScore;
         }
 
         if (isCapture) {
@@ -80,8 +80,9 @@ void MoveOrderer::updateHistory(
     std::int16_t bonus
 ) noexcept {
     const auto sideToMove = boardManager.turn() == chess::Color::WHITE ? 0 : 1;
-
-    const auto clampedBonus = bonus;
+    const auto clampedBonus = std::clamp<std::int16_t>(
+        bonus, -this->kMaxHistory, this->kMaxHistory
+    );
 
     const auto from = cutMove.from().index();
     const auto to = cutMove.to().index();

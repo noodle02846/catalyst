@@ -67,10 +67,11 @@ std::int16_t Search::depthSearch(
         }
     }
 
+    const auto ttMove = (entry.valid() && entry.move() != chess::Move::NO_MOVE)
+        ? entry.move() : chess::Move::NO_MOVE;
+
     const auto legalMoves = this->_moveOrderer.getMoves(
-        boardManager,
-        (entry.valid() && entry.move() != chess::Move::NO_MOVE)
-        ? entry.move() : chess::Move::NO_MOVE, depth
+        boardManager, ttMove, depth
     );
 
     std::int16_t bestScore = -32767;
@@ -97,7 +98,7 @@ std::int16_t Search::depthSearch(
         if (bestScore >= beta) {
             if (!chessBoard.isCapture(move)) {
                 this->_moveOrderer.updateHistory(
-                    boardManager, move, depth * depth
+                    boardManager, move, 300 * depth - 250
                 );
             }
 
@@ -129,6 +130,7 @@ void Search::iterativeSearch(UCI& protocol) noexcept {
 
     for (std::uint8_t depth = 0; depth < this->kMaxDepth; ++depth) {
         auto legalMoves = boardManager.getLegalMoves();
+
         const auto searchDepth = depth + 1;
 
         for (auto move : legalMoves) {
@@ -154,7 +156,7 @@ void Search::iterativeSearch(UCI& protocol) noexcept {
     }
 
     // @DEBUG:
-    // protocol.send("info string TT Size: {}", this->_transposition.size());
+    protocol.send("info string TT Size: {}", this->_transposition.size());
 }
 
 void Search::reconstructPVLine(
@@ -204,20 +206,21 @@ std::string Search::getPVLine(
 
 chess::Move Search::start(UCI& protocol) noexcept {
     this->reset();
+    
     this->_searching = true;
-
     this->iterativeSearch(protocol);
+    this->_searching = false;
+
     return this->_bestIterationMove;
 }
 
 void Search::stop() noexcept {
     if (this->searching()) {
-        this->reset();
+        this->_searching = false;
     }
 }
 
 void Search::reset() noexcept {
-    this->_searching = false;
     this->_nodesSearched = 0;
     
     this->_bestIterationDepth = 0;

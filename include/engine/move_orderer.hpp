@@ -33,6 +33,7 @@ public:
         chess::Move killerMove,
         std::uint8_t depth) noexcept;
 private:
+    static constexpr std::int16_t kTTScore = 32767;
     static constexpr std::int16_t kMaxHistory = 16384;
 
     std::array<std::array<chess::Move, 2>, 64> _killerMoves;
