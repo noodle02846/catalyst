@@ -28,8 +28,8 @@ chess::Movelist MoveOrderer::scoreMoves(
             score += 80 + Evaluation::pieceValue(promotionType) * 2;
         }
         
-        if (this->_killerMoves[0][depth] == move || 
-            this->_killerMoves[1][depth] == move
+        if (this->_killerMoves[depth][0] == move || 
+            this->_killerMoves[depth][1] == move
         ) {
             score += 70;
         }

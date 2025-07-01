@@ -22,8 +22,6 @@ std::int16_t Search::quiescenceSearch(
     const auto caputreMoves = boardManager.getLegalMoves(true);
 
     for (auto move : caputreMoves) {
-        this->_nodesSearched++;
-
         boardManager.pushMove(move);
         const auto score = -this->quiescenceSearch(boardManager, -beta, -alpha);
         boardManager.undoMove(move);
@@ -48,6 +46,10 @@ std::int16_t Search::depthSearch(
 ) noexcept {
     this->_nodesSearched++;
 
+    if (depth == 0 || !this->searching()) {
+        return this->quiescenceSearch(boardManager, alpha, beta);
+    }
+
     auto chessBoard = boardManager.internal();
 
     const auto zobristKey = chessBoard.zobrist();
@@ -65,10 +67,6 @@ std::int16_t Search::depthSearch(
         }
     }
 
-    if (depth == 0 || !this->searching()) {
-        return this->quiescenceSearch(boardManager, alpha, beta);
-    }
-
     const auto legalMoves = this->_moveOrderer.getMoves(
         boardManager,
         (entry.valid() && entry.move() != chess::Move::NO_MOVE)
@@ -79,14 +77,12 @@ std::int16_t Search::depthSearch(
     auto bestMove = chess::Move::NO_MOVE;
 
     for (auto move : legalMoves) {
-        this->_nodesSearched++;
-
         if (!this->searching()) {
             return 0;
         }
 
         boardManager.pushMove(move);
-        auto score = -this->depthSearch(
+        const auto score = -this->depthSearch(
             boardManager, depth - 1, -beta, -alpha
         );
         boardManager.undoMove(move);
@@ -125,13 +121,13 @@ std::int16_t Search::depthSearch(
 void Search::iterativeSearch(UCI& protocol) noexcept {
     auto& boardManager = protocol.getBoard();
 
-    for (std::int8_t depth = 0; depth < this->kMaxDepth; ++depth) {
+    for (std::uint8_t depth = 0; depth < this->kMaxDepth; ++depth) {
         auto legalMoves = boardManager.getLegalMoves();
-        auto searchDepth = depth + 1;
+        const auto searchDepth = depth + 1;
 
         for (auto move : legalMoves) {
             boardManager.pushMove(move);
-            auto score = -this->depthSearch(boardManager, searchDepth);
+            const auto score = -this->depthSearch(boardManager, searchDepth);
             boardManager.undoMove(move);
 
             if (score > this->_bestIterationScore) {
@@ -141,15 +137,63 @@ void Search::iterativeSearch(UCI& protocol) noexcept {
             }
         }
 
+        const auto line = this->getPVLine(
+            boardManager, this->_bestIterationMove);
+
         protocol.send(
             "info depth {} score cp {} nodes {} pv {}",
             searchDepth, this->_bestIterationScore, this->_nodesSearched,
-            chess::uci::moveToUci(this->_bestIterationMove).c_str()
+            line
         );
     }
 
     // @DEBUG:
     // protocol.send("info string TT Size: {}", this->_transposition.size());
+}
+
+void Search::reconstructPVLine(
+    BoardManager& boardManager,
+    std::vector<chess::Move>& pv,
+    std::uint8_t depth
+) noexcept {
+    if (depth > kMaxDepth) {
+        return;
+    }
+
+    const auto zobristKey = boardManager.internal().zobrist();
+
+    auto entry = this->_transposition.get(zobristKey);
+    auto ttMove = entry.move();
+
+    if (!entry.valid() || ttMove == chess::Move::NO_MOVE) {
+        return;
+    }
+
+    pv.push_back(ttMove);
+
+    boardManager.pushMove(ttMove);
+    this->reconstructPVLine(boardManager, pv, depth + 1);
+    boardManager.undoMove(ttMove);
+}
+
+std::string Search::getPVLine(
+    BoardManager& boardManager,
+    chess::Move bestMove
+) noexcept {
+    std::vector<chess::Move> pv;
+    std::string pvLine;
+
+    pv.push_back(bestMove);
+
+    boardManager.pushMove(bestMove);
+    this->reconstructPVLine(boardManager, pv, 0);
+    boardManager.undoMove(bestMove);
+
+    for (auto move : pv) {
+        pvLine += chess::uci::moveToUci(move) + " ";
+    }
+
+    return pvLine;
 }
 
 chess::Move Search::start(UCI& protocol) noexcept {

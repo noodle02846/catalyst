@@ -27,7 +27,5 @@ public:
         std::uint8_t depth
     ) noexcept;
 private:
-    static constexpr int kMaxKillerMoves = 2;
-
-    std::array<std::array<chess::Move, 64>, kMaxKillerMoves> _killerMoves;
+    std::array<std::array<chess::Move, 2>, 64> _killerMoves;
 };

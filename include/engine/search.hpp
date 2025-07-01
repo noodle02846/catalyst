@@ -30,6 +30,14 @@ public:
         std::int16_t beta = 32767) noexcept;
     void iterativeSearch(UCI& protocol) noexcept;
 
+    void reconstructPVLine(
+        BoardManager& boardManager,
+        std::vector<chess::Move>& pv,
+        std::uint8_t depth) noexcept;
+    std::string getPVLine(
+        BoardManager& boardManager,
+        chess::Move bestMove) noexcept;
+
     [[nodiscard]] chess::Move start(UCI& protocol) noexcept;
     void stop() noexcept;
     void reset() noexcept;
