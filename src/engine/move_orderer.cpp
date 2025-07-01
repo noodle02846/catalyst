@@ -99,9 +99,9 @@ void MoveOrderer::storeKillerMove(
     auto chessBoard = boardManager.internal();
 
     if (!chessBoard.isCapture(killerMove) && 
-        this->_killerMoves[0][depth] != killerMove
+        this->_killerMoves[depth][0] != killerMove
     ) {
-        this->_killerMoves[1][depth] = this->_killerMoves[0][depth];
-        this->_killerMoves[0][depth] = killerMove;
+        this->_killerMoves[depth][1] = this->_killerMoves[depth][0];
+        this->_killerMoves[depth][0] = killerMove;
     }
 }
