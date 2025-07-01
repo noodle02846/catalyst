@@ -95,6 +95,12 @@ std::int16_t Search::depthSearch(
         alpha = std::max(alpha, bestScore);
 
         if (bestScore >= beta) {
+            if (!chessBoard.isCapture(move)) {
+                this->_moveOrderer.updateHistory(
+                    boardManager, move, depth * depth
+                );
+            }
+
             this->_moveOrderer.storeKillerMove(boardManager, move, depth);
             return bestScore;
         }

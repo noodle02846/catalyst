@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <engine/move_orderer.hpp>
 
 chess::Movelist MoveOrderer::scoreMoves(
@@ -8,17 +9,21 @@ chess::Movelist MoveOrderer::scoreMoves(
     auto chessBoard = boardManager.internal();
     auto legalMoves = boardManager.getLegalMoves();
 
+    const auto sideToMove = boardManager.turn() == chess::Color::WHITE ? 0 : 1;
+
     for (auto& move : legalMoves) {
         std::int16_t score = 0;
-        auto promotionType = move.promotionType();
+
+        const auto promotionType = move.promotionType();
+        const auto isCapture = chessBoard.isCapture(move);
 
         if (move == ttMove) {
             score = 32767;
         }
 
-        if (chessBoard.isCapture(move)) {
-            auto victim = chessBoard.at(move.to()).type();
-            auto attacker = chessBoard.at(move.from()).type();
+        if (isCapture) {
+            const auto victim = chessBoard.at(move.to()).type();
+            const auto attacker = chessBoard.at(move.from()).type();
 
             score += 90 + (Evaluation::pieceValue(victim) * 10
                 - Evaluation::pieceValue(attacker));
@@ -27,11 +32,18 @@ chess::Movelist MoveOrderer::scoreMoves(
         if (promotionType != chess::PieceType::NONE) {
             score += 80 + Evaluation::pieceValue(promotionType) * 2;
         }
+
+        if (!isCapture) {
+            const auto from = move.from().index();
+            const auto to = move.to().index();
+
+            score += 70 + this->_history[sideToMove][from][to];
+        }
         
         if (this->_killerMoves[depth][0] == move || 
             this->_killerMoves[depth][1] == move
         ) {
-            score += 70;
+            score += 60;
         }
 
         move.setScore(score);
@@ -60,6 +72,23 @@ chess::Movelist MoveOrderer::getMoves(
     auto sortedMoves = this->sortMoves(scoredMoves);
 
     return sortedMoves;
+}
+
+void MoveOrderer::updateHistory(
+    BoardManager& boardManager, 
+    chess::Move cutMove, 
+    std::int16_t bonus
+) noexcept {
+    const auto sideToMove = boardManager.turn() == chess::Color::WHITE ? 0 : 1;
+
+    const auto clampedBonus = bonus;
+
+    const auto from = cutMove.from().index();
+    const auto to = cutMove.to().index();
+
+    this->_history[sideToMove][from][to] += 
+        clampedBonus - this->_history[sideToMove][from][to] * 
+            std::abs(clampedBonus) / this->kMaxHistory;
 }
 
 void MoveOrderer::storeKillerMove(

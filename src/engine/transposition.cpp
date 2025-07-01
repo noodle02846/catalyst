@@ -1,11 +1,5 @@
 #include <engine/transposition.hpp>
 
-TTEntry::TTEntry(std::int16_t eval, std::uint8_t depth, TTFlag flag) noexcept {
-    this->setEvaluation(eval);
-    this->setDepth(depth);
-    this->setFlag(flag);
-}
-
 std::int16_t TTEntry::evaluation() const noexcept {
     return this->_bits & this->_evalMask;
 }

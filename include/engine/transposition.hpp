@@ -16,9 +16,6 @@ enum class TTFlag : std::uint8_t {
 class TTEntry {
 public:
     TTEntry() = default;
-    
-    explicit TTEntry(
-        std::int16_t eval, std::uint8_t depth, TTFlag flag) noexcept;
 
     [[nodiscard]] std::int16_t evaluation() const noexcept;
     [[nodiscard]] std::uint8_t depth() const noexcept;
@@ -49,6 +46,7 @@ public:
 
     void clear() noexcept;
     void store(std::uint64_t zobristKey, TTEntry entry) noexcept;
+
     [[nodiscard]] TTEntry get(std::uint64_t zobristKey) const noexcept;
 private:
     std::vector<TTEntry> _entries{ kMaxEntries };
