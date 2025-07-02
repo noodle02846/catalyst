@@ -29,8 +29,8 @@ This is more or less a personal project for attempting to create a powerful C++ 
     * [x] MVV-LVA.
     * [x] Promotions.
     * [x] Killer heuristic.
-    * [ ] History heuristic.
-    * [ ] Static exchange evaluation.
+    * [x] History heuristic.
+    * [ ] Countermove heuristic.
   * [x] Quiescence Search.
 * Engine evaluation
   * [x] Board material.
@@ -53,7 +53,7 @@ This is more or less a personal project for attempting to create a powerful C++ 
 git clone --recurse-submodules https://github.com/noodle02846/catalyst.git
 cd catalyst
 cmake -B build
-cmake --build build --config Release --target Catalyst -j 10 --
+cmake --build build --config Release --target Catalyst --
 ```
 
 ## Contributing
