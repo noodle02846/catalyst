@@ -94,11 +94,17 @@ void CommandManager::position(
         boardManager.updateBoard(chess::constants::STARTPOS);
     }
 
-    if (moveIndex != 0xFF) {
+    const auto moves = moveIndex != 0xFF;
+
+    if (moves) {
         for (auto index = moveIndex + 1; index < args.size(); ++index) {
             boardManager.pushMove(args.at(index));
         }
     }
+
+    protocol.setPreviousMove(moves ? chess::uci::uciToMove(
+        boardManager.internal(), args.at(args.size() - 1)
+    ) : chess::Move::NULL_MOVE);
 }
 
 void CommandManager::go(

@@ -55,6 +55,8 @@ private:
     std::int8_t _bestIterationDepth{ 0 };
     std::int16_t _bestIterationScore{ 0 };
     chess::Move _bestIterationMove{ chess::Move::NULL_MOVE };
+    
+    chess::Move _previousMove{ chess::Move::NULL_MOVE };
 
     std::uint64_t _nodesSearched{ 0 };
 };

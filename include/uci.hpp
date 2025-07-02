@@ -43,11 +43,15 @@ public:
 
     void addCommand(const std::string_view& command, UCICommand handler);
 
+    void setPreviousMove(chess::Move previousMove) noexcept;
+    [[nodiscard]] chess::Move getPreviousMove() const noexcept;
+
     [[nodiscard]] BoardManager& getBoard() noexcept;
     [[nodiscard]] CommandManager& getCommands() noexcept;
 private:
     BoardManager _boardManager;
     CommandManager _commandManager;
 
+    chess::Move _previousMove{ chess::Move::NULL_MOVE };
     std::unordered_map<std::string_view, UCICommand> _commands;
 };

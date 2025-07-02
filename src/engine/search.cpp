@@ -71,7 +71,7 @@ std::int16_t Search::depthSearch(
         ? entry.move() : chess::Move::NO_MOVE;
 
     const auto legalMoves = this->_moveOrderer.getMoves(
-        boardManager, ttMove, depth
+        boardManager, ttMove, this->_previousMove, depth
     );
 
     std::int16_t bestScore = -32767;
@@ -206,6 +206,8 @@ std::string Search::getPVLine(
 
 chess::Move Search::start(UCI& protocol) noexcept {
     this->reset();
+
+    this->_previousMove = protocol.getPreviousMove();
     
     this->_searching = true;
     this->iterativeSearch(protocol);
@@ -222,6 +224,8 @@ void Search::stop() noexcept {
 
 void Search::reset() noexcept {
     this->_nodesSearched = 0;
+
+    this->_previousMove = chess::Move::NULL_MOVE;
     
     this->_bestIterationDepth = 0;
     this->_bestIterationScore = -32767;

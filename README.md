@@ -30,7 +30,7 @@ This is more or less a personal project for attempting to create a powerful C++ 
     * [x] Promotions.
     * [x] Killer heuristic.
     * [x] History heuristic.
-    * [ ] Countermove heuristic.
+    * [x] Countermove heuristic.
   * [x] Quiescence Search.
 * Engine evaluation
   * [x] Board material.

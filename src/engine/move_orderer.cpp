@@ -1,9 +1,9 @@
-#include <algorithm>
 #include <engine/move_orderer.hpp>
 
 chess::Movelist MoveOrderer::scoreMoves(
     BoardManager& boardManager,
     chess::Move ttMove,
+    chess::Move previousMove,
     std::uint8_t depth
 ) const noexcept {
     auto chessBoard = boardManager.internal();
@@ -39,11 +39,20 @@ chess::Movelist MoveOrderer::scoreMoves(
 
             score += 70 + this->_history[sideToMove][from][to];
         }
+
+        if (previousMove != chess::Move::NULL_MOVE) {
+            const auto prevFrom = previousMove.from().index();
+            const auto prevTo = previousMove.to().index();
+
+            if (this->_counterMoves[1 - sideToMove][prevFrom][prevTo] == move) {
+                score += 60 + depth * 16;
+            }
+        }
         
         if (this->_killerMoves[depth][0] == move || 
             this->_killerMoves[depth][1] == move
         ) {
-            score += 60;
+            score += 50;
         }
 
         move.setScore(score);
@@ -66,9 +75,12 @@ chess::Movelist MoveOrderer::sortMoves(chess::Movelist moves) const noexcept {
 chess::Movelist MoveOrderer::getMoves(
     BoardManager& boardManager,
     chess::Move ttMove,
+    chess::Move previousMove,
     std::uint8_t depth
 ) const noexcept {
-    auto scoredMoves = this->scoreMoves(boardManager, ttMove, depth);
+    auto scoredMoves = this->scoreMoves(
+        boardManager, ttMove, previousMove, depth
+    );
     auto sortedMoves = this->sortMoves(scoredMoves);
 
     return sortedMoves;

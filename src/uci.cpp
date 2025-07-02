@@ -36,6 +36,14 @@ void UCI::addCommand(const std::string_view& command, UCICommand handler) {
     this->_commands[command] = handler;
 }
 
+void UCI::setPreviousMove(chess::Move previousMove) noexcept {
+    this->_previousMove = previousMove;
+}
+
+chess::Move UCI::getPreviousMove() const noexcept {
+    return this->_previousMove;
+}
+
 BoardManager& UCI::getBoard() noexcept {
     return this->_boardManager;
 }
