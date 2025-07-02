@@ -46,6 +46,8 @@ public:
 private:
     static constexpr int kMaxDepth = 8;
 
+    static constexpr std::int16_t kPruneThreshold = 1000;
+
     bool _searching{ false };
 
     MoveOrderer _moveOrderer;

@@ -112,11 +112,13 @@ std::int16_t Search::depthSearch(
         }
     }
 
+    const auto previousMove = this->_previousMove;
+
     const auto ttMove = (entry.valid() && entry.move() != chess::Move::NO_MOVE)
         ? entry.move() : chess::Move::NO_MOVE;
 
     const auto legalMoves = this->_moveOrderer.getMoves(
-        boardManager, ttMove, this->_previousMove, depth
+        boardManager, ttMove, previousMove, depth
     );
 
     std::int16_t bestScore = -32767;
@@ -145,9 +147,11 @@ std::int16_t Search::depthSearch(
                 this->_moveOrderer.updateHistory(
                     boardManager, move, 300 * depth - 250
                 );
+
+                this->_moveOrderer.storeCounter(boardManager, previousMove, move);
             }
 
-            this->_moveOrderer.storeKillerMove(boardManager, move, depth);
+            this->_moveOrderer.storeKiller(boardManager, move, depth);
             return bestScore;
         }
     }
@@ -199,9 +203,6 @@ void Search::iterativeSearch(UCI& protocol) noexcept {
             line
         );
     }
-
-    // @DEBUG:
-    protocol.send("info string TT Size: {}", this->_transposition.size());
 }
 
 void Search::reconstructPVLine(

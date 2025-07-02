@@ -83,14 +83,27 @@ std::int16_t Evaluation::evaluate(BoardManager& boardManager) const noexcept {
     constexpr auto white = chess::Color::WHITE;
     constexpr auto black = chess::Color::BLACK;
 
-    auto whiteMaterial = this->material(boardManager, white);
-    auto blackMaterial = this->material(boardManager, black);
+    constexpr auto checkmate = chess::GameResultReason::CHECKMATE;
 
-    auto whitePieceSquare = this->pieceSquare(boardManager, white);
-    auto blackPieceSquare = this->pieceSquare(boardManager, black);
+    auto chessBoard = boardManager.internal();
+    const std::int16_t perspective = boardManager.turn() == white ? 1 : -1;
+
+    if (chessBoard.isRepetition(1)) {
+        return -this->kDrawScore * perspective;
+    }
+
+    if (chessBoard.isHalfMoveDraw()) {
+        return chessBoard.getHalfMoveDrawType().first 
+            == checkmate ? -this->kMateScore : -this->kDrawScore;
+    }
+
+    const auto whiteMaterial = this->material(boardManager, white);
+    const auto blackMaterial = this->material(boardManager, black);
+
+    const auto whitePieceSquare = this->pieceSquare(boardManager, white);
+    const auto blackPieceSquare = this->pieceSquare(boardManager, black);
 
     std::int16_t score = 0;
-    std::int16_t perspective = boardManager.turn() == white ? 1 : -1;
 
     score += (whiteMaterial - blackMaterial);
     score += (whitePieceSquare - blackPieceSquare);

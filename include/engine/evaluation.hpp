@@ -13,6 +13,9 @@ class Evaluation {
 public:
     Evaluation() = default;
 
+    static constexpr std::int16_t kDrawScore = 500;
+    static constexpr std::int16_t kMateScore = 2000;
+
     static constexpr std::int16_t kPawnValue = 10;
     static constexpr std::int16_t kKnightValue = 32;
     static constexpr std::int16_t kBishopValue = 35;
