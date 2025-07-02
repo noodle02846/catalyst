@@ -13,18 +13,12 @@
 
 class MoveOrderer {
 public:
-    [[nodiscard]] chess::Movelist scoreMoves(
-        BoardManager& boardManager,
-        chess::Move ttMove,
-        chess::Move previousMove,
-        std::uint8_t depth) const noexcept;
-    [[nodiscard]] chess::Movelist sortMoves(
-        chess::Movelist moves) const noexcept;
     [[nodiscard]] chess::Movelist getMoves(
         BoardManager& boardManager,
         chess::Move ttMove,
         chess::Move previousMove,
-        std::uint8_t depth) const noexcept;
+        std::uint8_t depth,
+        bool capturesOnly = false) const noexcept;
 
     void updateHistory(
         BoardManager& boardManager, 

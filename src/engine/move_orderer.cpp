@@ -1,13 +1,14 @@
 #include <engine/move_orderer.hpp>
 
-chess::Movelist MoveOrderer::scoreMoves(
+chess::Movelist MoveOrderer::getMoves(
     BoardManager& boardManager,
     chess::Move ttMove,
     chess::Move previousMove,
-    std::uint8_t depth
+    std::uint8_t depth,
+    bool capturesOnly
 ) const noexcept {
     auto chessBoard = boardManager.internal();
-    auto legalMoves = boardManager.getLegalMoves();
+    auto legalMoves = boardManager.getLegalMoves(capturesOnly);
 
     const auto sideToMove = boardManager.turn() == chess::Color::WHITE ? 0 : 1;
 
@@ -19,71 +20,53 @@ chess::Movelist MoveOrderer::scoreMoves(
 
         if (move == ttMove) {
             score = this->kTTScore;
-        }
+        } else {
+            if (isCapture) {
+                const auto victim = chessBoard.at(move.to()).type();
+                const auto attacker = chessBoard.at(move.from()).type();
 
-        if (isCapture) {
-            const auto victim = chessBoard.at(move.to()).type();
-            const auto attacker = chessBoard.at(move.from()).type();
-
-            score += 90 + (Evaluation::pieceValue(victim) * 10
-                - Evaluation::pieceValue(attacker));
-        }
-
-        if (promotionType != chess::PieceType::NONE) {
-            score += 80 + Evaluation::pieceValue(promotionType) * 2;
-        }
-
-        if (!isCapture) {
-            const auto from = move.from().index();
-            const auto to = move.to().index();
-
-            score += 70 + this->_history[sideToMove][from][to];
-        }
-
-        if (previousMove != chess::Move::NULL_MOVE) {
-            const auto prevFrom = previousMove.from().index();
-            const auto prevTo = previousMove.to().index();
-
-            if (this->_counterMoves[1 - sideToMove][prevFrom][prevTo] == move) {
-                score += 60 + depth * 16;
+                score += 90 + (Evaluation::pieceValue(victim) * 10
+                    - Evaluation::pieceValue(attacker));
             }
-        }
-        
-        if (this->_killerMoves[depth][0] == move || 
-            this->_killerMoves[depth][1] == move
-        ) {
-            score += 50;
+
+            if (promotionType != chess::PieceType::NONE) {
+                score += 80 + Evaluation::pieceValue(promotionType) * 2;
+            }
+
+            if (!isCapture) {
+                const auto from = move.from().index();
+                const auto to = move.to().index();
+
+                score += 70 + this->_history[sideToMove][from][to];
+            }
+
+            if (previousMove != chess::Move::NULL_MOVE) {
+                const auto prevFrom = previousMove.from().index();
+                const auto prevTo = previousMove.to().index();
+
+                if (this->_counterMoves[1 - sideToMove][prevFrom][prevTo] == move) {
+                    score += 60 + depth * 16;
+                }
+            }
+            
+            if (this->_killerMoves[depth][0] == move || 
+                this->_killerMoves[depth][1] == move
+            ) {
+                score += 50;
+            }
         }
 
         move.setScore(score);
     }
 
-    return legalMoves;
-}
-
-chess::Movelist MoveOrderer::sortMoves(chess::Movelist moves) const noexcept {
     std::sort(
-    moves.begin(), 
-    moves.end(), 
+    legalMoves.begin(), 
+    legalMoves.end(), 
     [](const chess::Move& a, const chess::Move& b) {
         return a.score() > b.score();
     });
 
-    return moves;
-}
-
-chess::Movelist MoveOrderer::getMoves(
-    BoardManager& boardManager,
-    chess::Move ttMove,
-    chess::Move previousMove,
-    std::uint8_t depth
-) const noexcept {
-    auto scoredMoves = this->scoreMoves(
-        boardManager, ttMove, previousMove, depth
-    );
-    auto sortedMoves = this->sortMoves(scoredMoves);
-
-    return sortedMoves;
+    return legalMoves;
 }
 
 void MoveOrderer::updateHistory(
