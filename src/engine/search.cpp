@@ -15,13 +15,38 @@ std::int16_t Search::quiescenceSearch(
         return beta;
     }
 
+    auto chessBoard = boardManager.internal();
+
+    const auto zobristKey = chessBoard.zobrist();
+    auto entry = this->_transposition.get(zobristKey);
+
+    if (entry.valid()) {
+        auto flag = entry.flag();
+        auto score = entry.evaluation();
+
+        if (flag == TTFlag::EXACT ||
+            (flag == TTFlag::LOWERBOUND) && score >= beta ||
+            (flag == TTFlag::UPPERBOUND) && score <= alpha
+        ) {
+            return score;
+        }
+    }
+
     if (alpha < standPat) {
         alpha = standPat;
     }
 
-    const auto caputreMoves = boardManager.getLegalMoves(true);
+    const auto ttMove = (entry.valid() && entry.move() != chess::Move::NO_MOVE)
+        ? entry.move() : chess::Move::NO_MOVE;
 
-    for (auto move : caputreMoves) {
+    const auto legalMoves = this->_moveOrderer.getMoves(
+        boardManager, ttMove, this->_previousMove, 0, true
+    );
+
+    std::int16_t bestScore = -32767;
+    auto bestMove = chess::Move::NO_MOVE;
+
+    for (auto move : legalMoves) {
         boardManager.pushMove(move);
         const auto score = -this->quiescenceSearch(boardManager, -beta, -alpha);
         boardManager.undoMove(move);
@@ -30,11 +55,31 @@ std::int16_t Search::quiescenceSearch(
             return beta;
         }
 
-        if (score > alpha) {
-            alpha = score;
+        if (score > bestScore) {
+            bestScore = score;
+            bestMove = move.move();
+        }
+
+        if (bestScore > alpha) {
+            alpha = bestScore;
         }
     }
 
+    auto flag = TTFlag::EXACT;
+
+    if (bestScore <= alpha) {
+        flag = TTFlag::UPPERBOUND;
+    } else if (bestScore >= beta) {
+        flag = TTFlag::LOWERBOUND;
+    }
+
+    entry.setFlag(flag)
+        .setValid(true)
+        .setDepth(0)
+        .setMove(bestMove)
+        .setEvaluation(bestScore);
+
+    this->_transposition.store(zobristKey, entry);
     return alpha;
 }
 
