@@ -27,10 +27,11 @@ This is more or less a personal project for attempting to create a powerful C++ 
   * [x] Move ordering.
     * [x] TT/Hash-Move.
     * [x] MVV-LVA.
+    * [x] SEE.
     * [x] Promotions.
-    * [x] Killer heuristic.
     * [x] History heuristic.
     * [x] Countermove heuristic.
+    * [x] Killer heuristic.
   * [x] Quiescence Search.
 * Engine evaluation
   * [x] Board material.

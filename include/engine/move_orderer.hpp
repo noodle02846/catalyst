@@ -13,6 +13,11 @@
 
 class MoveOrderer {
 public:
+    [[nodiscard]] std::int16_t see(BoardManager& boardManager) const noexcept;
+    [[nodiscard]] std::int16_t seeCapture(
+        BoardManager& boardManager,
+        chess::Move capture) const noexcept;
+
     [[nodiscard]] chess::Movelist getMoves(
         BoardManager& boardManager,
         chess::Move ttMove,

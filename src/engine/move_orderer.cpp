@@ -1,5 +1,54 @@
 #include <engine/move_orderer.hpp>
 
+std::int16_t MoveOrderer::see(BoardManager& boardManager) const noexcept {
+    std::int16_t value = 0;
+
+    const auto chessBoard = boardManager.internal();
+    const auto legalMoves = boardManager.getLegalMoves(true);
+
+    constexpr auto nullMove = chess::Move::NULL_MOVE;
+    
+    chess::Move smallestMove = nullMove;
+    auto smallestValue = Evaluation::kKingValue;
+
+    for (const auto move : legalMoves) {
+        const auto attacker = chessBoard.at(move.from()).type();
+        const auto pieceValue = Evaluation::pieceValue(attacker);
+
+        if (smallestValue > pieceValue) {
+            smallestValue = pieceValue;
+            smallestMove = move;
+        }
+    }
+
+    if (smallestMove != nullMove) {
+        const auto victim = chessBoard.at(smallestMove.to()).type();
+
+        boardManager.pushMove(smallestMove);
+        value = std::max(0, 
+            Evaluation::pieceValue(victim) - this->see(boardManager));
+        boardManager.undoMove(smallestMove);
+    }
+
+    return value;
+}
+
+std::int16_t MoveOrderer::seeCapture(
+    BoardManager& boardManager,
+    chess::Move capture
+) const noexcept {
+    std::int16_t value = 0;
+
+    const auto chessBoard = boardManager.internal();
+    const auto victim = chessBoard.at(capture.to()).type();
+
+    boardManager.pushMove(capture);
+    value = Evaluation::pieceValue(victim) - this->see(boardManager);
+    boardManager.undoMove(capture);
+
+    return value;
+}
+
 chess::Movelist MoveOrderer::getMoves(
     BoardManager& boardManager,
     chess::Move ttMove,
@@ -16,17 +65,20 @@ chess::Movelist MoveOrderer::getMoves(
         std::int16_t score = 0;
 
         const auto promotionType = move.promotionType();
-        const auto isCapture = chessBoard.isCapture(move);
+        const auto isCapture = capturesOnly ? true : chessBoard.isCapture(move);
 
         if (move == ttMove) {
             score = this->kTTScore;
         } else {
             if (isCapture) {
-                const auto victim = chessBoard.at(move.to()).type();
-                const auto attacker = chessBoard.at(move.from()).type();
+                const auto seeValue = 
+                    this->seeCapture(boardManager, move);
 
-                score += 90 + (Evaluation::pieceValue(victim) * 10
-                    - Evaluation::pieceValue(attacker));
+                if (seeValue < 0) {
+                    score = -1000 + seeValue;
+                } else {
+                    score += 90 + seeValue;
+                }
             }
 
             score += promotionType != chess::PieceType::NONE ?
