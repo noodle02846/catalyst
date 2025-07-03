@@ -26,13 +26,14 @@ This is more or less a personal project for attempting to create a powerful C++ 
   * [x] Transposition tables.
   * [x] Move ordering.
     * [x] TT/Hash-Move.
-    * [x] MVV-LVA.
     * [x] SEE.
     * [x] Promotions.
     * [x] History heuristic.
     * [x] Countermove heuristic.
     * [x] Killer heuristic.
   * [x] Quiescence Search.
+  * [x] Selectivity
+    * [x] Check extension.
 * Engine evaluation
   * [x] Board material.
   * [x] Piece square tables.

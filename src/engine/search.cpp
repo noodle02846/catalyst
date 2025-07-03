@@ -2,6 +2,18 @@
 
 #include <uci.hpp>
 
+std::uint8_t Search::searchExtensions(
+    BoardManager& boardManager
+) noexcept {
+    std::uint8_t extension = 0;
+
+    if (boardManager.internal().inCheck()) {
+        extension += 1;
+    }
+
+    return extension;
+}
+
 std::int16_t Search::quiescenceSearch(
     BoardManager& boardManager,
     std::int16_t alpha,
@@ -95,7 +107,7 @@ std::int16_t Search::depthSearch(
         return this->quiescenceSearch(boardManager, alpha, beta);
     }
 
-    auto chessBoard = boardManager.internal();
+    const auto chessBoard = boardManager.internal();
 
     const auto zobristKey = chessBoard.zobrist();
     auto entry = this->_transposition.get(zobristKey);
@@ -113,10 +125,8 @@ std::int16_t Search::depthSearch(
     }
 
     const auto previousMove = this->_previousMove;
-
     const auto ttMove = (entry.valid() && entry.move() != chess::Move::NO_MOVE)
         ? entry.move() : chess::Move::NO_MOVE;
-
     const auto legalMoves = this->_moveOrderer.getMoves(
         boardManager, ttMove, previousMove, depth
     );
@@ -124,14 +134,18 @@ std::int16_t Search::depthSearch(
     std::int16_t bestScore = -32767;
     auto bestMove = chess::Move::NO_MOVE;
 
-    for (auto move : legalMoves) {
+    for (const auto move : legalMoves) {
         if (!this->searching()) {
             return 0;
         }
 
+        const auto extension = this->searchExtensions(boardManager);
+
+        this->_iterationSelectivity = extension;
+
         boardManager.pushMove(move);
         const auto score = -this->depthSearch(
-            boardManager, depth - 1, -beta, -alpha
+            boardManager, depth - 1 + extension, -beta, -alpha
         );
         boardManager.undoMove(move);
 
@@ -178,11 +192,13 @@ void Search::iterativeSearch(UCI& protocol) noexcept {
     auto& boardManager = protocol.getBoard();
 
     for (std::uint8_t depth = 0; depth < this->kMaxDepth; ++depth) {
-        auto legalMoves = boardManager.getLegalMoves();
+        const auto legalMoves = boardManager.getLegalMoves();
 
-        const auto searchDepth = depth + 1;
+        const std::uint8_t searchDepth = depth + 1;
 
-        for (auto move : legalMoves) {
+        this->_iterationSelectivity = 0;
+
+        for (const auto move : legalMoves) {
             boardManager.pushMove(move);
             const auto score = -this->depthSearch(boardManager, searchDepth);
             boardManager.undoMove(move);
@@ -198,9 +214,9 @@ void Search::iterativeSearch(UCI& protocol) noexcept {
             boardManager, this->_bestIterationMove);
 
         protocol.send(
-            "info depth {} score cp {} nodes {} pv {}",
-            searchDepth, this->_bestIterationScore, this->_nodesSearched,
-            line
+            "info depth {} seldepth {} score cp {} nodes {} pv {}",
+            searchDepth, this->_iterationSelectivity,
+            this->_bestIterationScore, this->_nodesSearched, line
         );
     }
 }
@@ -276,6 +292,8 @@ void Search::reset() noexcept {
     this->_bestIterationDepth = 0;
     this->_bestIterationScore = -32767;
     this->_bestIterationMove = chess::Move::NULL_MOVE;
+
+    this->_iterationSelectivity = 0;
 
     this->_transposition.clear();
 }

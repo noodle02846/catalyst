@@ -126,13 +126,14 @@ void MoveOrderer::storeKiller(
     chess::Move killerMove, 
     std::uint8_t depth
 ) noexcept {
-    auto chessBoard = boardManager.internal();
+    const auto chessBoard = boardManager.internal();
+    auto& killers = this->_killerMoves[depth];
 
     if (!chessBoard.isCapture(killerMove) && 
-        this->_killerMoves[depth][0] != killerMove
+        killers[0] != killerMove
     ) {
-        this->_killerMoves[depth][1] = this->_killerMoves[depth][0];
-        this->_killerMoves[depth][0] = killerMove;
+        killers[1] = killers[0];
+        killers[0] = killerMove;
     }
 }
 
@@ -172,8 +173,8 @@ bool MoveOrderer::isKillerMove(
     chess::Move move,
     std::uint8_t depth
 ) const noexcept {
-    return this->_killerMoves[depth][0] == move || 
-        this->_killerMoves[depth][1] == move;
+    const auto killers = this->_killerMoves[depth];
+    return killers[0] == move || killers[1] == move;
 }
 
 bool MoveOrderer::isCounterMove(

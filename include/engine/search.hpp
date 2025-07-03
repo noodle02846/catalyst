@@ -19,6 +19,9 @@ class Search {
 public:
     Search() = default;
 
+    [[nodiscard]] std::uint8_t searchExtensions(
+        BoardManager& boardManager) noexcept;
+
     [[nodiscard]] std::int16_t quiescenceSearch(
         BoardManager& boardManager,
         std::int16_t alpha = -32767,
@@ -28,6 +31,7 @@ public:
         std::uint8_t depth,
         std::int16_t alpha = -32767,
         std::int16_t beta = 32767) noexcept;
+    
     void iterativeSearch(UCI& protocol) noexcept;
 
     void reconstructPVLine(
@@ -44,7 +48,7 @@ public:
 
     [[nodiscard]] bool searching() const noexcept;
 private:
-    static constexpr int kMaxDepth = 8;
+    static constexpr int kMaxDepth = 4;
 
     static constexpr std::int16_t kPruneThreshold = 1000;
 
@@ -54,7 +58,8 @@ private:
     Evaluation _evaluation;
     TT _transposition;
 
-    std::int8_t _bestIterationDepth{ 0 };
+    std::uint8_t _iterationSelectivity{ 0 };
+    std::uint8_t _bestIterationDepth{ 0 };
     std::int16_t _bestIterationScore{ 0 };
     chess::Move _bestIterationMove{ chess::Move::NULL_MOVE };
     
