@@ -48,7 +48,7 @@ public:
 
     [[nodiscard]] bool searching() const noexcept;
 private:
-    static constexpr int kMaxDepth = 4;
+    static constexpr int kMaxDepth = 8;
 
     static constexpr std::int16_t kPruneThreshold = 1000;
 
